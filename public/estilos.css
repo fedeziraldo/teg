@@ -1,0 +1,16 @@
+body{
+    background-color: teal;
+}
+
+ul{
+    background-color: cornsilk;
+}
+
+#mapa{
+    position: relative;
+}
+
+[id^='f'], [id^='m']{
+    background-color: whitesmoke;
+    font-weight: bold;
+}

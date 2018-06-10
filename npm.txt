@@ -1,0 +1,5 @@
+npm install mongodb
+npm install express
+npm install socket.io
+npm install pug
+npm install body-parser

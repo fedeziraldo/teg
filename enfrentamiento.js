@@ -19,7 +19,7 @@ function atacar(paisA, paisD){
     }
 
     for (let i=0; i<Math.min(paisD.ejercitos, MAXIMO_NORMAL); i++){
-        dadosA.push(tirarDado());
+        dadosD.push(tirarDado());
     }
 
     ordenarDados(dadosA);
@@ -70,7 +70,7 @@ function ordenarDados(dados){
  * @returns el minimo de dados entre ataque y defensa o sea la cantidad de fichas totales que se pierden
  */
 function enfrentamientos(paisA, paisD){
-    return Math.min(paisA.ejercitos-1, paisD.ejercitos);
+    return Math.min(paisA.ejercitos-1, paisD.ejercitos, MAXIMO_NORMAL);
 }
 
 exports.atacar=atacar;

@@ -4,15 +4,15 @@ db.pais.insert([
         id: 8,
         nombre: 'Australia', 
         archivo: 'AUSTRALIA.png',
-        posX: '1224',
-        posY: '837',
+        posX: 1224,
+        posY: 837,
     },
      
     {
         id: 9,
         nombre: 'Sumatra', 
         archivo: 'SUMATRA.png',
-        posX: '1212',
-        posY: '770',
+        posX: 1212,
+        posY: 770,
     }
  ])

@@ -44,7 +44,7 @@ server.on("resultadoAtaque", resultado =>{
     div = document.getElementById("f" + resultado.defensa.id)
     div.innerHTML = `ejercitos:${resultado.defensa.ejercitos}`;
     let imagen =  document.getElementById(resultado.defensa.id);
-    imagen.src = `${colores[resultado.defensa.jugador]}/${resultado.defensa.archivo}`;
+   
 });
 
 server.on("iniciaJuego", paises =>{
@@ -62,9 +62,10 @@ server.on("iniciaJuego", paises =>{
         imagen.style.position = "absolute"
         imagen.style.left = pais.posX + "px";
         imagen.style.top = pais.posY+ "px";
+        mapa.appendChild(imagen);
         imagen.addEventListener("dragstart", allowDrop);
         imagen.addEventListener("load", ev => {
-            mapa.appendChild(ev.target);
+            
 
             let fichas = document.createElement("div");
             fichas.id = "f" + pais.id;

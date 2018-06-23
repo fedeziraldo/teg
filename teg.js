@@ -6,6 +6,7 @@ const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
 
 const Enfrentamiento = require("./enfrentamiento");
+
 const Paises = require("./pais");
 
 const url = "mongodb://localhost:27017/";
@@ -184,6 +185,19 @@ io.on('connection', cliente => {
       cliente.emit('jugadaInvalida',e)
       }
   });
+
+cliente.on('misil', batalla => {
+  let paisA = Paises.buscarPais(paises, batalla.ataque);
+  let paisD = Paises.buscarPais(paises, batalla.defensa);
+  try{
+    let daño=Enfrentamiento.enfrentamientoMisil(paisA,paidD);
+    paisD.ejercitos -= Enfrentamiento.enfrentamientos(paisA, paisD) - daño;
+    paisA.misiles-1;
+  io.emit("resultadoMisil", {ataque: paisA, defensa: paisD});
+}catch(e){
+    cliente.emit('jugadaInvalida',e)
+    }
+});
 });
 
 http.listen(3000, () => {

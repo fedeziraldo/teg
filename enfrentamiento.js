@@ -39,6 +39,7 @@ function atacar(paisA, paisD){
     return ataqueGana;
 }
 function noPuedeAtacar(paisA,paisD){
+    
     if(paisA.ejercitos<=1){
         throw('no hay suficiente ejercito')
     }
@@ -48,6 +49,25 @@ function noPuedeAtacar(paisA,paisD){
     if((pais.limita(paisA,paisD))){
         throw('no son limitrofes')
     }
+}
+function enfrentamientoMisiles(paisA, paisD){
+    noPuedeAtacarMisiles(paisA,paisD)
+   
+
+    return 4-pais.distancia(paisA,paisd);
+} 
+function noPuedeAtacarMisiles(paisA,paisD){
+    if(paisA.misiles<=1){
+        throw('No hay misiles')
+    }
+    if(paisA.jugador===paisD.jugador){
+        throw('es el mismo jugador')
+    }
+   
+    
+    if(paisD.misiles>=1){
+        throw('no se puede lanzar misil')
+     }
 }
 
 
@@ -90,3 +110,4 @@ function enfrentamientos(paisA, paisD){
 
 exports.atacar=atacar;
 exports.enfrentamientos=enfrentamientos;
+exports.enfrentamientoMisil=enfrentamientoMisil;

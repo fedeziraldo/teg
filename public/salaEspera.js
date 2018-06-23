@@ -46,6 +46,13 @@ server.on("resultadoAtaque", resultado =>{
     let imagen =  document.getElementById(resultado.defensa.id);
    
 });
+server.on("resultadoMisil", resultado =>{
+    let div = document.getElementById("m" + resultado.ataque.id);
+    div.innerHTML = `misiles:${resultado.ataque.misiles}`;
+    div = document.getElementById("f" + resultado.defensa.id)
+    div.innerHTML = `ejercitos:${resultado.defensa.ejercitos}`;
+   
+});
 server.on("jugadaInvalida", resultado =>{
   alert(resultado)
    
@@ -88,7 +95,7 @@ server.on("iniciaJuego", paises =>{
             misiles.draggable = "true";
             misiles.addEventListener("dragover", allowDrop);
             misiles.addEventListener("dragstart", misilA);
-            misiles.addEventListener("drop", misilD);
+            misiles.addEventListener("drop", enfrentaD);
             misiles.style.position = "absolute";
             misiles.style.left = pais.posX + ev.target.width*.4+ "px";
             misiles.style.top = pais.posY + ev.target.height*.6+ "px";
@@ -117,10 +124,4 @@ function enfrentaD(ev) {
 
 function misilA(ev) {
     ev.dataTransfer.setData("misil", ev.target.id.substr(1));
-}
-
-function misilD(ev) {
-    ev.preventDefault();
-    server.emit("misil", {ataque: ev.dataTransfer.getData("misil"), defensa: ev.target.id.substr(1)});
-    
 }

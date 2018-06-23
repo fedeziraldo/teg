@@ -191,8 +191,8 @@ cliente.on('misil', batalla => {
   let paisD = Paises.buscarPais(paises, batalla.defensa);
   try{
     let daño=Enfrentamiento.enfrentamientoMisil(paisA,paidD);
-    paisD.ejercitos -= Enfrentamiento.enfrentamientos(paisA, paisD) - daño;
-    paisA.misiles-1;
+    paisD.ejercitos -=  daño;
+    paisA.misiles-=1;
   io.emit("resultadoMisil", {ataque: paisA, defensa: paisD});
 }catch(e){
     cliente.emit('jugadaInvalida',e)

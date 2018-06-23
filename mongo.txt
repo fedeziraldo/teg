@@ -47,8 +47,11 @@ db.pais.insert([
     }
  ])
  db.limite.insert([
-    {
-        pais1: 8,
-        pais2: 9 
-    }
+    {pais1: 8, pais2: 9},
+    {pais1: 40, pais2: 55}
+ ])
+  db.limite.insert([
+    {pais1: 8, pais2: 55},
+    {pais1: 8, pais2: 20},
+    {pais1: 8, pais2: 60}
  ])

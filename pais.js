@@ -20,7 +20,7 @@ function buscarPais(paises, id){
  */
 function limita(pais, limite){
     for (let lim of pais.limites){
-        if (lim == limite){
+        if (lim == limite.id){
             return true;
         }
     }
@@ -42,23 +42,23 @@ function distancia(pais, limite){
     }
 
     for (let lim of pais.limites){
-        if (lim == limite){
+        if (lim == limite.id){
             return 1;
         }
     }
 
     for (let lim of paises.limites){
-        for (let limlim of lim.limites){
-            if (limlim == limite){
+        for (let limlim of buscarPais(lim).limites){
+            if (limlim == limite.id){
                 return 2;
             }
         }
     }
 
     for (let lim of paises.limites){
-        for (let limlim of lim.limites){
-            for (let limlimlim of limlim.limites){
-                if (limlimlim == limite){
+        for (let limlim of buscarPais(lim).limites){
+            for (let limlimlim of buscarPais(limlim).limites){
+                if (limlimlim == limite.id){
                     return 3;
                 }
             }

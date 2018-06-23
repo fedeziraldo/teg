@@ -1,3 +1,5 @@
+let paises;
+
 /**
  * busca el pais de la lista con el id
  * @param {*} paises 
@@ -48,7 +50,7 @@ function distancia(pais, limite){
     }
 
     for (let lim of paises.limites){
-        for (let limlim of buscarPais(lim).limites){
+        for (let limlim of buscarPais(paises,lim).limites){
             if (limlim == limite.id){
                 return 2;
             }
@@ -56,8 +58,8 @@ function distancia(pais, limite){
     }
 
     for (let lim of paises.limites){
-        for (let limlim of buscarPais(lim).limites){
-            for (let limlimlim of buscarPais(limlim).limites){
+        for (let limlim of buscarPais(paises,lim).limites){
+            for (let limlimlim of buscarPais(paises,limlim).limites){
                 if (limlimlim == limite.id){
                     return 3;
                 }
@@ -70,3 +72,4 @@ function distancia(pais, limite){
 exports.buscarPais=buscarPais;
 exports.limita=limita;
 exports.distancia=distancia;
+exports.paises = paises;

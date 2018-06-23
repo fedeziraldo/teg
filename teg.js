@@ -148,6 +148,7 @@ io.on('connection', cliente => {
           result[i].limites = [];
         }
         paises = result;
+        Paises.paises = result;
         dbo.collection("limite").find({}).toArray((err, result) => {
           if (err) throw err;
           for (let i=0; i<result.length; i++){

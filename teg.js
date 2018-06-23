@@ -144,10 +144,20 @@ io.on('connection', cliente => {
           result[i].jugador = i% Object.keys(clientes).length;
           result[i].ejercitos = 10;
           result[i].misiles = 3;
+          result[i].limites = [];
         }
         paises = result;
-        io.emit("iniciaJuego", result);
-        db.close();
+        dbo.collection("limite").find({}).toArray((err, result) => {
+          if (err) throw err;
+          for (let i=0; i<result.length; i++){
+            let pais1 = Paises.buscarPais(paises, result[i].pais1);
+            let pais2 = Paises.buscarPais(paises, result[i].pais2);
+            pais1.limites.push(pais2.id);
+            pais2.limites.push(pais1.id);
+          }
+          io.emit("iniciaJuego", paises);
+          db.close();
+        });
       });
     });
   });

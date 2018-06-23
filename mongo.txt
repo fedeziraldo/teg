@@ -16,3 +16,39 @@ db.pais.insert([
         posY: 770,
     }
  ])
+ db.pais.insert([
+    {
+        id: 20,
+        nombre: 'Filipinas', 
+        archivo: 'FILIPINAS.png',
+        posX: 1340,
+        posY: 750,
+    },
+    {
+        id: 60,
+        nombre: 'Tonga', 
+        archivo: 'TONGA.png',
+        posX: 1486,
+        posY: 799,
+    },
+    {
+        id: 55,
+        nombre: 'Tasmania', 
+        archivo: 'TASMANIA.png',
+        posX: 1343,
+        posY: 1037,
+    },
+    {
+        id: 40,
+        nombre: 'Nueva Zelandia', 
+        archivo: 'NUEVA_ZELANDIA.png',
+        posX: 1233,
+        posY: 1074,
+    }
+ ])
+ db.limite.insert([
+    {
+        pais1: 8,
+        pais2: 9 
+    }
+ ])

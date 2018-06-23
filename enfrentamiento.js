@@ -46,7 +46,7 @@ function noPuedeAtacar(paisA,paisD){
     if(paisA.jugador===paisD.jugador){
         throw('es el mismo jugador')
     }
-    if((pais.limita(paisA,paisD))){
+    if(!pais.limita(paisA,paisD)){
         throw('no son limitrofes')
     }
 }

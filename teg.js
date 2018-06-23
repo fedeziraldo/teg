@@ -155,19 +155,24 @@ io.on('connection', cliente => {
   cliente.on('ataque', batalla => {
     let paisA = Paises.buscarPais(paises, batalla.ataque);
     let paisD = Paises.buscarPais(paises, batalla.defensa);
-
+    try{
     let resultado = Enfrentamiento.atacar(paisA, paisD);
-
+    
     paisA.ejercitos -= Enfrentamiento.enfrentamientos(paisA, paisD) - resultado;
+   
     paisD.ejercitos -= resultado;
 
     if (paisD.ejercitos < 1){
       paisA.ejercitos--;
       paisD.ejercitos = 1;
       paisD.jugador = paisA.jugador;
+
     }
 
     io.emit("resultadoAtaque", {ataque: paisA, defensa: paisD});
+  }catch(e){
+      cliente.emit('jugadaInvalida',e)
+      }
   });
 });
 

@@ -1,3 +1,5 @@
+var pais=require("./pais")
+
 const CARAS = 6;
 const MAXIMO_NORMAL = 3;
 
@@ -11,8 +13,9 @@ const MAXIMO_NORMAL = 3;
  * @returns cantidad de posiciones del vector de ataque de que supera al de defensa
  */
 function atacar(paisA, paisD){
+     noPuedeAtacar(paisA,paisD);
     let dadosA = [];
-    let dadosD = [];
+    let dadosD = []; 
 
     for (let i=0; i<Math.min(paisA.ejercitos-1, MAXIMO_NORMAL); i++){
         dadosA.push(tirarDado());
@@ -35,6 +38,18 @@ function atacar(paisA, paisD){
 
     return ataqueGana;
 }
+function noPuedeAtacar(paisA,paisD){
+    if(paisA.ejercitos<=1){
+        throw('no hay suficiente ejercito')
+    }
+    if(paisA.jugador===paisD.jugador){
+        throw('es el mismo jugador')
+    }
+    if((pais.limita(paisA,paisD))){
+        throw('no son limitrofes')
+    }
+}
+
 
 /**
  * simula la tirada del dado

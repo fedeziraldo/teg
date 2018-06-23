@@ -46,6 +46,10 @@ server.on("resultadoAtaque", resultado =>{
     let imagen =  document.getElementById(resultado.defensa.id);
    
 });
+server.on("jugadaInvalida", resultado =>{
+  alert(resultado)
+   
+});
 
 server.on("iniciaJuego", paises =>{
     inicio.style.display = "none";

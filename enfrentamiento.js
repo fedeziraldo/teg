@@ -50,7 +50,7 @@ function noPuedeAtacar(paisA,paisD){
         throw('no son limitrofes')
     }
 }
-function enfrentamientoMisiles(paisA, paisD){
+function enfrentamientoMisil(paisA, paisD){
     noPuedeAtacarMisiles(paisA,paisD)
    
 

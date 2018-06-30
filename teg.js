@@ -4,7 +4,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
-
+Jugadores=[];
+turno=0;
 const Enfrentamiento = require("./enfrentamiento");
 
 const Paises = require("./pais");
@@ -173,9 +174,34 @@ io.on('connection', cliente => {
   }catch(e){
       cliente.emit('jugadaInvalida',e)
       }
+      
+  });
+  cliente.on('pasarTurno',()=>{
+    pasarTurno();
   });
 });
+ 
 
 http.listen(3000, () => {
   console.log('puerto escucha *:3000');
 });
+
+function pasarTurno(){
+  noPuedePasarturno()
+
+    turno++
+  }
+  function noPuedePasarturno(){
+      throw('no podes pasar de turno');
+    }
+  
+
+   
+  function terminarRonda(){
+    if(finDeRonda){
+      this.jugadores.unshift(this.jugadores.pop())
+      turno=0;
+  } 
+  }
+
+exports.pasarTurno=pasarTurno;

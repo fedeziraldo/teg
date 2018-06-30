@@ -139,7 +139,7 @@ io.on('connection', cliente => {
 
   cliente.on('inicio', () => {
     Paises.cargarPaises(url, nombredb, io, clientes);
-    for(let jug of clientes){
+    for(let jug in clientes){
       Jugadores.push(jug);
     }
   });

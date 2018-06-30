@@ -139,13 +139,10 @@ io.on('connection', cliente => {
 
   cliente.on('inicio', () => {
     Paises.cargarPaises(url, nombredb, io, clientes);
-<<<<<<< HEAD
     CartaGlobal.cargarCartasGlobales(url, nombredb, io);
-=======
     for(let jug in clientes){
       jugadores.push(clientes[jug]);
     }
->>>>>>> 2549e50cad41af6249382520ddcf0fd0e3987890
   });
 
   cliente.on('ataque', batalla => {

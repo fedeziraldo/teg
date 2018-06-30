@@ -1,4 +1,4 @@
-var pais=require("./pais")
+const Paises=require("./pais");
 
 const CARAS = 6;
 const MAXIMO_NORMAL = 3;
@@ -10,7 +10,7 @@ const MAXIMO_NORMAL = 3;
  * 
  * @param {*} paisA 
  * @param {*} paisD 
- * @returns cantidad de posiciones del vector de ataque de que supera al de defensa
+ * @returns cantidad de posiciones del vector de ataque que supera al de defensa
  */
 function atacar(paisA, paisD){
      noPuedeAtacar(paisA,paisD);
@@ -25,8 +25,8 @@ function atacar(paisA, paisD){
         dadosD.push(tirarDado());
     }
 
-    ordenarDados(dadosA);
-    ordenarDados(dadosD);
+    ordenar(dadosA);
+    ordenar(dadosD);
 
     let ataqueGana = 0;
     let enfr = enfrentamientos(paisA, paisD);
@@ -46,7 +46,7 @@ function noPuedeAtacar(paisA,paisD){
     if(paisA.jugador===paisD.jugador){
         throw('es el mismo jugador')
     }
-    if(!pais.limita(paisA,paisD)){
+    if(!Paises.limita(paisA,paisD)){
         throw('no son limitrofes')
     }
 }
@@ -54,17 +54,15 @@ function enfrentamientoMisil(paisA, paisD){
     noPuedeAtacarMisiles(paisA,paisD)
    
 
-    return 4-pais.distancia(paisA,paisd);
+    return 4-Paises.distancia(paisA,paisD);
 } 
 function noPuedeAtacarMisiles(paisA,paisD){
-    if(paisA.misiles<=1){
+    if(paisA.misiles<1){
         throw('No hay misiles')
     }
     if(paisA.jugador===paisD.jugador){
         throw('es el mismo jugador')
     }
-   
-    
     if(paisD.misiles>=1){
         throw('no se puede lanzar misil')
      }
@@ -85,7 +83,7 @@ function tirarDado(){
  * 
  * @param {*} dados 
  */
-function ordenarDados(dados){
+function ordenar(dados){
     for (let i=0; i<dados.length; i++){
         for (let j=i; j<dados.length; j++){
             if (dados[i] < dados[j]){

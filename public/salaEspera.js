@@ -39,12 +39,12 @@ server.on("saleJugador", nombre =>{
 });
 
 server.on("resultadoAtaque", resultado =>{
+    let imagen =  document.getElementById(resultado.defensa.id);
+    imagen.src = `${colores[resultado.defensa.jugador]}/${resultado.defensa.archivo}`;
     let div = document.getElementById("f" + resultado.ataque.id);
     div.innerHTML = `ejercitos:${resultado.ataque.ejercitos}`;
     div = document.getElementById("f" + resultado.defensa.id)
     div.innerHTML = `ejercitos:${resultado.defensa.ejercitos}`;
-    let imagen =  document.getElementById(resultado.defensa.id);
-   
 });
 server.on("resultadoMisil", resultado =>{
     let div = document.getElementById("m" + resultado.ataque.id);
@@ -77,6 +77,9 @@ server.on("iniciaJuego", paises =>{
         imagen.addEventListener("dragstart", allowDrop);
         imagen.addEventListener("load", ev => {
             
+            if (document.getElementById("f" + pais.id)){
+                return;
+            }
 
             let fichas = document.createElement("div");
             fichas.id = "f" + pais.id;

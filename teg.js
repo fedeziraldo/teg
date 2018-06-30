@@ -10,12 +10,12 @@ const Enfrentamiento = require("./enfrentamiento");
 const Paises = require("./pais");
 
 const url = "mongodb://localhost:27017/";
-let paises;
+const nombredb = "fede";
 const clientes = {};
 
 MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
   if (err) throw err;
-  let dbo = db.db("fede");
+  let dbo = db.db(nombredb);
   let myquery = {};
   let newvalues = {$set: {jugando: false} };
   dbo.collection("jugador").updateMany(myquery, newvalues, (err, res) =>{
@@ -42,14 +42,14 @@ app.get('/', (req, res) => {
 app.post('/registrar', (req, res) => {
   MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    let dbo = db.db("fede");
+    let dbo = db.db(nombredb);
     let query = { nombre: req.body.nombre };
     dbo.collection("jugador").findOne(query, (err, result) => {
       if (err) throw err;
       if (result == null){
         MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
           if (err) throw err;
-          let dbo = db.db("fede");
+          let dbo = db.db(nombredb);
           let myobj = { nombre: req.body.nombre, jugando: false };
           dbo.collection("jugador").insertOne(myobj, (err, result) => {
             if (err) throw err;
@@ -72,7 +72,7 @@ app.post('/registrar', (req, res) => {
 app.post('/entrar', (req, res) => {
   MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
     if (err) throw err;
-    let dbo = db.db("fede");
+    let dbo = db.db(nombredb);
     let query = { nombre: req.body.nombre };
     dbo.collection("jugador").findOne(query, (err, result) => {
       if (err) throw err;
@@ -100,7 +100,7 @@ io.on('connection', cliente => {
   cliente.on('nombre', nombre =>{
     MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
       if (err) throw err;
-      let dbo = db.db("fede");
+      let dbo = db.db(nombredb);
       let myquery = { nombre: nombre};
       let newvalues = {$set: {jugando: true} };
       dbo.collection("jugador").updateMany(myquery, newvalues, (err, res) =>{
@@ -119,7 +119,7 @@ io.on('connection', cliente => {
       if (clientes[attr] == cliente){
         MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
           if (err) throw err;
-          let dbo = db.db("fede");
+          let dbo = db.db(nombredb);
           let myquery = {nombre: attr};
           let newvalues = {$set: {jugando: false} };
           dbo.collection("jugador").updateMany(myquery, newvalues, (err, res) =>{
@@ -136,37 +136,12 @@ io.on('connection', cliente => {
   });
 
   cliente.on('inicio', () => {
-    MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
-      if (err) throw err;
-      var dbo = db.db("fede");
-      dbo.collection("pais").find({}).toArray((err, result) => {
-        if (err) throw err;
-        for (let i=0; i<result.length; i++){
-          result[i].jugador = i% Object.keys(clientes).length;
-          result[i].ejercitos = 10;
-          result[i].misiles = 3;
-          result[i].limites = [];
-        }
-        paises = result;
-        Paises.paises = result;
-        dbo.collection("limite").find({}).toArray((err, result) => {
-          if (err) throw err;
-          for (let i=0; i<result.length; i++){
-            let pais1 = Paises.buscarPais(paises, result[i].pais1);
-            let pais2 = Paises.buscarPais(paises, result[i].pais2);
-            pais1.limites.push(pais2.id);
-            pais2.limites.push(pais1.id);
-          }
-          io.emit("iniciaJuego", paises);
-          db.close();
-        });
-      });
-    });
+    Paises.cargarPaises(url, nombredb, io, clientes);
   });
 
   cliente.on('ataque', batalla => {
-    let paisA = Paises.buscarPais(paises, batalla.ataque);
-    let paisD = Paises.buscarPais(paises, batalla.defensa);
+    let paisA = Paises.buscarPais(batalla.ataque);
+    let paisD = Paises.buscarPais(batalla.defensa);
     try{
     let resultado = Enfrentamiento.atacar(paisA, paisD);
     
@@ -187,18 +162,18 @@ io.on('connection', cliente => {
       }
   });
 
-cliente.on('misil', batalla => {
-  let paisA = Paises.buscarPais(paises, batalla.ataque);
-  let paisD = Paises.buscarPais(paises, batalla.defensa);
-  try{
-    let daño=Enfrentamiento.enfrentamientoMisil(paisA,paisD);
-    paisD.ejercitos -=  daño;
-    paisA.misiles-=1;
-  io.emit("resultadoMisil", {ataque: paisA, defensa: paisD});
-}catch(e){
-    cliente.emit('jugadaInvalida',e)
-    }
-});
+  cliente.on('misil', batalla => {
+    let paisA = Paises.buscarPais(batalla.ataque);
+    let paisD = Paises.buscarPais(batalla.defensa);
+    try{
+      let daño=Enfrentamiento.enfrentamientoMisil(paisA,paisD);
+      paisD.ejercitos -=  daño;
+      paisA.misiles-=1;
+    io.emit("resultadoMisil", {ataque: paisA, defensa: paisD});
+  }catch(e){
+      cliente.emit('jugadaInvalida',e)
+      }
+  });
 });
 
 http.listen(3000, () => {

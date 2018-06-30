@@ -4,7 +4,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
-
+jugadores=[];
+turno=0;
 const Enfrentamiento = require("./enfrentamiento");
 const CartaGlobal = require("./cartaGlobal");
 const Paises = require("./pais");
@@ -12,6 +13,7 @@ const Paises = require("./pais");
 const url = "mongodb://localhost:27017/";
 const nombredb = "fede";
 const clientes = {};
+
 
 MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
   if (err) throw err;
@@ -137,13 +139,22 @@ io.on('connection', cliente => {
 
   cliente.on('inicio', () => {
     Paises.cargarPaises(url, nombredb, io, clientes);
+<<<<<<< HEAD
     CartaGlobal.cargarCartasGlobales(url, nombredb, io);
+=======
+    for(let jug in clientes){
+      jugadores.push(clientes[jug]);
+    }
+>>>>>>> 2549e50cad41af6249382520ddcf0fd0e3987890
   });
 
   cliente.on('ataque', batalla => {
     let paisA = Paises.buscarPais(batalla.ataque);
     let paisD = Paises.buscarPais(batalla.defensa);
     try{
+          if(jugadores[turno] != cliente){
+            throw('no es tu turno');
+          }
     let resultado = Enfrentamiento.atacar(paisA, paisD);
     
     paisA.ejercitos -= Enfrentamiento.enfrentamientos(paisA, paisD) - resultado;
@@ -167,6 +178,9 @@ io.on('connection', cliente => {
     let paisA = Paises.buscarPais(batalla.ataque);
     let paisD = Paises.buscarPais(batalla.defensa);
     try{
+      if(jugadores[turno] != cliente){
+        throw('no es tu turno');
+      }
       let daño=Enfrentamiento.enfrentamientoMisil(paisA,paisD);
       paisD.ejercitos -=  daño;
       paisA.misiles-=1;
@@ -174,9 +188,39 @@ io.on('connection', cliente => {
   }catch(e){
       cliente.emit('jugadaInvalida',e)
       }
+      
+  });
+  cliente.on('pasarTurno',()=>{
+    try{
+    pasarTurno(cliente);
+    }catch(e){
+      cliente.emit('jugadaInvalida',e)
+    }
   });
 });
+ 
 
 http.listen(3000, () => {
   console.log('puerto escucha *:3000');
 });
+
+function pasarTurno(cliente){
+  noPuedePasarturno(cliente)
+
+    turno++
+  }
+  function noPuedePasarturno(cliente){
+    if(jugadores[turno]!=cliente)
+      throw('no podes pasar de turno');
+    }
+  
+
+   
+  function terminarRonda(){
+    if(finDeRonda){
+      this.jugadores.unshift(this.jugadores.pop())
+      turno=0;
+  } 
+  }
+
+exports.pasarTurno=pasarTurno;

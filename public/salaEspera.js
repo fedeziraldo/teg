@@ -59,8 +59,13 @@ server.on("jugadaInvalida", resultado =>{
 });
 
 server.on("iniciaJuego", paises =>{
-    inicio.style.display = "none";
     let mapa = document.getElementById("mapa");
+    botonPasarTurno=document.createElement('button');
+    document.body.appendChild(botonPasarTurno);
+    botonPasarTurno.addEventListener('click',pasarServer);
+    botonPasarTurno.innerHTML='Pasar Turno'
+    inicio.style.display = "none";
+    
     let imagen = new Image();
     imagen.src = "teg.jpg";
     imagen.id = "mundo";
@@ -132,4 +137,7 @@ function enfrentaD(ev) {
 
 function misilA(ev) {
     ev.dataTransfer.setData("misil", ev.target.id.substr(1));
+}
+function pasarServer(){
+    server.emit('pasarTurno')
 }

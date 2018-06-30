@@ -4,7 +4,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
-Jugadores=[];
+jugadores=[];
 turno=0;
 const Enfrentamiento = require("./enfrentamiento");
 
@@ -140,7 +140,7 @@ io.on('connection', cliente => {
   cliente.on('inicio', () => {
     Paises.cargarPaises(url, nombredb, io, clientes);
     for(let jug in clientes){
-      Jugadores.push(jug);
+      jugadores.push(clientes[jug]);
     }
   });
 
@@ -148,6 +148,9 @@ io.on('connection', cliente => {
     let paisA = Paises.buscarPais(batalla.ataque);
     let paisD = Paises.buscarPais(batalla.defensa);
     try{
+          if(jugadores[turno] != cliente){
+            throw('no es tu turno');
+          }
     let resultado = Enfrentamiento.atacar(paisA, paisD);
     
     paisA.ejercitos -= Enfrentamiento.enfrentamientos(paisA, paisD) - resultado;
@@ -171,6 +174,9 @@ io.on('connection', cliente => {
     let paisA = Paises.buscarPais(batalla.ataque);
     let paisD = Paises.buscarPais(batalla.defensa);
     try{
+      if(jugadores[turno] != cliente){
+        throw('no es tu turno');
+      }
       let daño=Enfrentamiento.enfrentamientoMisil(paisA,paisD);
       paisD.ejercitos -=  daño;
       paisA.misiles-=1;
@@ -181,7 +187,11 @@ io.on('connection', cliente => {
       
   });
   cliente.on('pasarTurno',()=>{
+    try{
     pasarTurno(cliente);
+    }catch(e){
+      cliente.emit('jugadaInvalida',e)
+    }
   });
 });
  

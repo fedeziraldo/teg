@@ -134,5 +134,5 @@ function misilA(ev) {
     ev.dataTransfer.setData("misil", ev.target.id.substr(1));
 }
 function pasarServer(){
-    server.emit('pasar')
+    server.emit('pasarTurno')
 }

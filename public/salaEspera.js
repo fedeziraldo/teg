@@ -92,7 +92,7 @@ server.on("iniciaJuego", paises =>{
             fichas.style.top = pais.posY + ev.target.height*.4+ "px";
             fichas.innerHTML = `ejercitos:${pais.ejercitos}`;
             mapa.appendChild(fichas);
-
+            
             let misiles = document.createElement("div");
             misiles.id = "m"+ pais.id;
             misiles.draggable = "true";
@@ -107,6 +107,11 @@ server.on("iniciaJuego", paises =>{
         });
     }
 });
+
+server.on("cartaGlobal", carta =>{
+    document.getElementById("cartaGlobal").innerHTML=carta.tipo;
+     
+  });
 
 function allowDrop(ev) {
     ev.preventDefault();

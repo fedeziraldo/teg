@@ -6,7 +6,7 @@ const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
 
 const Enfrentamiento = require("./enfrentamiento");
-
+const CartaGlobal = require("./cartaGlobal");
 const Paises = require("./pais");
 
 const url = "mongodb://localhost:27017/";
@@ -137,6 +137,7 @@ io.on('connection', cliente => {
 
   cliente.on('inicio', () => {
     Paises.cargarPaises(url, nombredb, io, clientes);
+    CartaGlobal.cargarCartasGlobales(url, nombredb, io);
   });
 
   cliente.on('ataque', batalla => {

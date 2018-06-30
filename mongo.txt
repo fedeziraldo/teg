@@ -55,3 +55,14 @@ db.pais.insert([
     {pais1: 8, pais2: 20},
     {pais1: 8, pais2: 60}
  ])
+ db.cartaGlobal.insert([
+    {tipo: "Combate clásico", cantidad: 20},
+    {tipo: "Nieve", defensa: 1, cantidad: 1},
+    {tipo: "Viento a favor", ataque: 1, cantidad: 1},
+    {tipo: "Descanso Azul", color: "AZUL", cantidad: 1},
+    {tipo: "Descanso Rojo", color: "ROJO", cantidad: 1},
+    {tipo: "Descanso Celeste", color: "CELESTE", cantidad: 1},
+    {tipo: "Descanso Naranja", color: "NARANJA", cantidad: 1},
+    {tipo: "Descanso Verde", color: "VERDE", cantidad: 1},
+    {tipo: "Descanso Amarillo", color: "AMARILLO", cantidad: 1}
+ ])

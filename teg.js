@@ -14,6 +14,7 @@ const url = "mongodb://localhost:27017/";
 const nombredb = "fede";
 const clientes = {};
 
+
 MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
   if (err) throw err;
   let dbo = db.db(nombredb);
@@ -138,6 +139,9 @@ io.on('connection', cliente => {
 
   cliente.on('inicio', () => {
     Paises.cargarPaises(url, nombredb, io, clientes);
+    for(let jug of clientes){
+      Jugadores.push(jug);
+    }
   });
 
   cliente.on('ataque', batalla => {
@@ -177,7 +181,7 @@ io.on('connection', cliente => {
       
   });
   cliente.on('pasarTurno',()=>{
-    pasarTurno();
+    pasarTurno(cliente);
   });
 });
  
@@ -186,12 +190,13 @@ http.listen(3000, () => {
   console.log('puerto escucha *:3000');
 });
 
-function pasarTurno(){
-  noPuedePasarturno()
+function pasarTurno(cliente){
+  noPuedePasarturno(cliente)
 
     turno++
   }
-  function noPuedePasarturno(){
+  function noPuedePasarturno(cliente){
+    if(jugadores[turno]!=cliente)
       throw('no podes pasar de turno');
     }
   

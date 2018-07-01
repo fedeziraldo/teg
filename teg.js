@@ -173,6 +173,7 @@ io.on('connection', cliente => {
 		let paisD = Paises.buscarPais(batalla.defensa);
 		try {
 			validacionTurno(cliente);
+			validacionTurnoPaisAtaque(paisA);
 			let daño = Enfrentamiento.enfrentamientoMisil(paisA, paisD);
 			paisD.ejercitos -= daño;
 			paisA.misiles -= 1;
@@ -186,7 +187,7 @@ io.on('connection', cliente => {
 	cliente.on('pasarTurno', () => {
 		try {
 			validacionTurno(cliente);
-			turno++;
+			turno = turno < clientes.length-1 ? turno+1 : 0;
 		} catch (e) {
 			cliente.emit('jugadaInvalida', e)
 		}

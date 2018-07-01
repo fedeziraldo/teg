@@ -64,7 +64,7 @@ function noPuedeAtacarMisiles(paisA,paisD){
         throw('es el mismo jugador')
     }
     if(paisD.misiles>=1){
-        throw('no se puede lanzar misil')
+        throw('no se puede lanzar misil a un pais con misiles')
      }
 }
 

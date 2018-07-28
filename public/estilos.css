@@ -15,3 +15,15 @@ ul{
     background-color: whitesmoke;
     font-weight: bold;
 }
+.bienvenida{
+    color:blue;
+    text-align: center;
+}
+.form{
+    border:2px solid aqua;
+    width: 250px;
+    margin:0 40% ;
+    padding: 5px;
+    background-color: chartreuse;
+    border-radius: 3px;
+}

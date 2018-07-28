@@ -119,6 +119,7 @@ io.on('connection', cliente => {
   cliente.on('disconnect', () => {
     for (let attr in clientes){
       if (clientes[attr] == cliente){
+        jugadores.splice(jugadores.indexOf(cliente), 1);
         MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
           if (err) throw err;
           let dbo = db.db(nombredb);

@@ -153,6 +153,10 @@ io.on('connection', cliente => {
           if(jugadores[turno] != cliente){
             throw('no es tu turno');
           }
+          if(turno!==paisA.jugador){
+            throw('no es tu pais')
+          }
+          
     let resultado = Enfrentamiento.atacar(paisA, paisD);
     
     paisA.ejercitos -= Enfrentamiento.enfrentamientos(paisA, paisD) - resultado;
@@ -178,6 +182,9 @@ io.on('connection', cliente => {
     try{
       if(jugadores[turno] != cliente){
         throw('no es tu turno');
+      }
+      if(turno!=paisA.jugador){
+        throw('no es tu pais')
       }
       let daño=Enfrentamiento.enfrentamientoMisil(paisA,paisD);
       paisD.ejercitos -=  daño;

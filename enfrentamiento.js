@@ -49,6 +49,7 @@ function noPuedeAtacar(paisA,paisD){
     if(!Paises.limita(paisA,paisD)){
         throw('no son limitrofes')
     }
+
 }
 function enfrentamientoMisil(paisA, paisD){
     noPuedeAtacarMisiles(paisA,paisD)

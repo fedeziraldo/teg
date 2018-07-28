@@ -1,22 +1,7 @@
 use fede;
+db.dropDatabase();
 db.pais.insert([
-    {
-        id: 8,
-        nombre: 'Australia', 
-        archivo: 'AUSTRALIA.png',
-        posX: 1224,
-        posY: 837,
-    },
-     
-    {
-        id: 9,
-        nombre: 'Sumatra', 
-        archivo: 'SUMATRA.png',
-        posX: 1212,
-        posY: 770,
-    }
- ])
- db.pais.insert([
+    // inserts oceania
     {
         id: 20,
         nombre: 'Filipinas', 
@@ -44,13 +29,27 @@ db.pais.insert([
         archivo: 'NUEVA_ZELANDIA.png',
         posX: 1233,
         posY: 1074,
+    },
+    {
+        id: 8,
+        nombre: 'Australia', 
+        archivo: 'AUSTRALIA.png',
+        posX: 1224,
+        posY: 837,
+    },
+     
+    {
+        id: 9,
+        nombre: 'Sumatra', 
+        archivo: 'SUMATRA.png',
+        posX: 1212,
+        posY: 770,
     }
  ])
  db.limite.insert([
+     //limites oceania
     {pais1: 8, pais2: 9},
-    {pais1: 40, pais2: 55}
- ])
-  db.limite.insert([
+    {pais1: 40, pais2: 55},
     {pais1: 8, pais2: 55},
     {pais1: 8, pais2: 20},
     {pais1: 8, pais2: 60}
@@ -66,3 +65,4 @@ db.pais.insert([
     {tipo: "Descanso Verde", color: "VERDE", cantidad: 1},
     {tipo: "Descanso Amarillo", color: "AMARILLO", cantidad: 1}
  ])
+ 

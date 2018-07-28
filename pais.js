@@ -16,13 +16,14 @@ function cargarPaises(url, nombredb, io, clientes){
         let dbo = db.db(nombredb);
         dbo.collection("pais").find({}).toArray((err, result) => {
             if (err) throw err;
-            for (let i=0; i<result.length; i++){
-                result[i].jugador = i% Object.keys(clientes).length;
-                result[i].ejercitos = 10;
-                result[i].misiles = 3;
-                result[i].limites = [];
-            }
             paises = result;
+            desordenarPaises();
+            for (let i=0; i<paises.length; i++){
+                paises[i].jugador = i% Object.keys(clientes).length;
+                paises[i].ejercitos = 10;
+                paises[i].misiles = i%2;
+                paises[i].limites = [];
+            }
             dbo.collection("limite").find({}).toArray((err, result) => {
                 if (err) throw err;
                 for (let i=0; i<result.length; i++){
@@ -36,6 +37,22 @@ function cargarPaises(url, nombredb, io, clientes){
             });
         });
     });
+}
+
+/**
+ * 
+ * 
+ */
+function desordenarPaises(){
+    for (let i=0; i<paises.length; i++){
+        for (let j=0; j<paises.length; j++){
+            if (Math.floor(Math.random()*2) == 0){
+                let aux = paises[i];
+                paises[i] = paises[j];
+                paises[j] = aux;
+            }
+        }
+    }
 }
 
 /**
@@ -84,7 +101,7 @@ function distancia(pais, limite){
         return 1;
     }
 
-    for (let lim of paises.limites){
+    for (let lim of pais.limites){
         for (let limlim of buscarPais(lim).limites){
             if (limlim == limite.id){
                 return 2;
@@ -92,7 +109,7 @@ function distancia(pais, limite){
         }
     }
 
-    for (let lim of paises.limites){
+    for (let lim of pais.limites){
         for (let limlim of buscarPais(lim).limites){
             for (let limlimlim of buscarPais(limlim).limites){
                 if (limlimlim == limite.id){

@@ -1,4 +1,5 @@
-use fede;
+﻿use fede;
+db.dropDatabase()
 db.pais.insert([
     {
         id: 8,

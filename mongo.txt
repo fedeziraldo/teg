@@ -612,6 +612,28 @@ db.escudo.insert([
 
 db.objetivo.insert([
     {
-        
+        id: 1,
+        nombre: "Ocupar Europa y America del Sur",
+        metodo: "europaYAmericaSur"
+    },
+    {
+        id: 2,
+        nombre: "Ocupar America del Norte y Oceania",
+        metodo: "americaNorteYOceania"
+    },
+    {
+        id: 3,
+        nombre: "Ocupar Asia y America del Central",
+        metodo: "asiaYAmericaCentral"
+    },
+    {
+        id: 4,
+        nombre: "Ocupar America del Norte, 8 de Asia y 4 de Europa",
+        metodo: "americaNorte8Asia4Europa"
+    },
+    {
+        id: 5,
+        nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+        metodo: "cuatroAmNorte4Europa4Asia3Africa3AmSur3AmCentral3Oceania"
     }
 ])

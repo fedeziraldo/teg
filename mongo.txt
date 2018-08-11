@@ -554,8 +554,12 @@ db.pais.insert([
  ])
  db.cartaGlobal.insert([
     {tipo: "Combate clásico", cantidad: 20},
-    {tipo: "Nieve", defensa: 1, cantidad: 1},
-    {tipo: "Viento a favor", ataque: 1, cantidad: 1},
+    {tipo: "Nieve", defensa: 1, cantidad: 4},
+    {tipo: "Viento a favor", ataque: 1, cantidad: 4},
+    {tipo: "Fronteras abiertas", fronteraAbierta: true, cantidad: 4},
+    {tipo: "Fronteras cerradas", fronteraCerrada: true, cantidad: 4},
+    {tipo: "Crisis", crisis: true, cantidad: 4},
+    {tipo: "Refuerzos extra", refuerzosExtra: true, cantidad: 4},
     {tipo: "Descanso Azul", color: "AZUL", cantidad: 1},
     {tipo: "Descanso Rojo", color: "ROJO", cantidad: 1},
     {tipo: "Descanso Celeste", color: "CELESTE", cantidad: 1},
@@ -563,3 +567,80 @@ db.pais.insert([
     {tipo: "Descanso Verde", color: "VERDE", cantidad: 1},
     {tipo: "Descanso Amarillo", color: "AMARILLO", cantidad: 1}
  ])
+
+db.continente.insert([
+{
+    id: 1,
+    nombre: "Africa",
+    fichas: 4,
+    escudo: "Soldado ancla",
+    paises: []  
+},
+{
+    id: 2,
+    nombre: "America Central,
+    fichas: 3,
+    escudo: "Avión",
+    paises: []  
+},
+{
+    id: 3,
+    nombre: "America del Norte,
+    fichas: 6,
+    escudo: "Super Tarjeta",
+    paises: []  
+},
+{
+    id: 4,
+    nombre: "America del Sur,
+    fichas: 4,
+    escudo: "Avion ancla",
+    paises: []  
+},
+{
+    id: 5,
+    nombre: "Asia,
+    fichas: 8,
+    escudo: "Super tarjeta",
+    paises: []  
+},
+{
+    id: 6,
+    nombre: "Europa",
+    fichas: 8,
+    escudo: "Super tarjeta",
+    paises: []  
+},
+{
+    id: 7,
+    nombre: "Oceania,
+    fichas: 3,
+    escudo: "Soldado",
+    paises: []  
+},
+])
+
+db.escudo.insert([
+    {tipo: "Avión", valor: [1]},
+    {tipo: "Soldado", valor: [2]},
+    {tipo: "Ancla", valor: [4]},
+    {tipo: "Armas", valor: [1,2,4]},
+    {
+        tipo: "Super tarjeta",
+        valor: [7],
+    },
+    {
+        tipo: "Avión ancla",
+        valor: [5],
+    },
+    {
+        tipo: "Soldado ancla",
+        valor: [6],
+    }
+])
+
+db.objetivo.insert([
+    {
+        
+    }
+])

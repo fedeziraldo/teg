@@ -514,14 +514,43 @@ db.pais.insert([
     {pais1: 6, pais2: 70},
     {pais1: 6, pais2: 10},
     {pais1: 6, pais2: 56},
-    {pais1: 6, pais2: 60},
-    {pais1: 8, pais2: 60},
-    {pais1: 8, pais2: 60},
-    {pais1: 8, pais2: 60},
-    {pais1: 8, pais2: 60},
-    {pais1: 8, pais2: 60},
-    {pais1: 8, pais2: 60},
-    {pais1: 8, pais2: 60},
+    {pais1: 6, pais2: 9},
+    {pais1: 9, pais2: 56},
+    {pais1: 9, pais2: 19},
+    {pais1: 9, pais2: 10},
+    {pais1: 10, pais2:70 },
+    {pais1: 10, pais2:56},
+    {pais1: 10, pais2:71},
+    {pais1: 10, pais2:13},
+    
+    {pais1: 10, pais2:19},
+    {pais1: 13, pais2:71},
+    {pais1: 13, pais2:19},
+    
+    
+
+    
+    //paises america central
+
+    {pais1: 16, pais2: 40},
+    {pais1: 16, pais2: 32},
+    {pais1: 16, pais2: 49},
+    {pais1: 25, pais2:50},
+    {pais1: 25, pais2: 32},
+    {pais1: 32, pais2: 49},
+    {pais1: 40, pais2:50},
+
+    //paises oceania
+
+    {pais1: 7, pais2: 67},
+    {pais1: 7, pais2: 27},
+    {pais1: 7, pais2: 64},
+    {pais1: 7, pais2: 65},
+    {pais1: 27, pais2: 67},
+    {pais1: 54, pais2: 65},
+    {pais1: 4, pais2: 60},
+    {pais1: 4, pais2: 60},
+
  ])
  db.cartaGlobal.insert([
     {tipo: "Combate clásico", cantidad: 20},

@@ -24,15 +24,15 @@ function cargarPaises(url, nombredb, io, clientes){
                 paises[i].misiles = i%2;
                 paises[i].limites = [];
             }
+            io.emit("iniciaJuego", paises);
             dbo.collection("limite").find({}).toArray((err, result) => {
                 if (err) throw err;
                 for (let i=0; i<result.length; i++){
                     let pais1 = buscarPais(result[i].pais1);
                     let pais2 = buscarPais(result[i].pais2);
-                    pais1.limites.push(pais2.id);
-                    pais2.limites.push(pais1.id);
+                    pais1.limites.push(pais2);
+                    pais2.limites.push(pais1);
                 }
-                io.emit("iniciaJuego", paises);
                 db.close();
             });
         });
@@ -76,7 +76,7 @@ function buscarPais(id){
  */
 function limita(pais, limite){
     for (let lim of pais.limites){
-        if (lim == limite.id){
+        if (lim == limite){
             return true;
         }
     }
@@ -102,17 +102,17 @@ function distancia(pais, limite){
     }
 
     for (let lim of pais.limites){
-        for (let limlim of buscarPais(lim).limites){
-            if (limlim == limite.id){
+        for (let limlim of lim.limites){
+            if (limlim == limite){
                 return 2;
             }
         }
     }
 
     for (let lim of pais.limites){
-        for (let limlim of buscarPais(lim).limites){
-            for (let limlimlim of buscarPais(limlim).limites){
-                if (limlimlim == limite.id){
+        for (let limlim of lim.limites){
+            for (let limlimlim of limlim.limites){
+                if (limlimlim == limite){
                     return 3;
                 }
             }

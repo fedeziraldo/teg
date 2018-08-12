@@ -153,7 +153,7 @@ io.on('connection', cliente => {
           if(jugadores[turno] != cliente){
             throw('no es tu turno');
           }
-          if(turno!==paisA.jugador){
+          if(turno!==ullpaisA.jugador){
             throw('no es tu pais')
           }
           

@@ -5,8 +5,11 @@ html(lang="es")
        title Login
        link(rel="stylesheet", href="estilos.css")
    body
-      form(action="", method="post")
-         input(name="nombre" maxlenght="30")
-         button(type="submit" formaction="entrar") Entrar
-         button(type="submit" formaction="registrar") Registrar
-      p #{mensaje}  
+    h1.bienvenida Bienvenidos al TEG
+    div.form
+        form(action="", method="post")
+            input(name="nombre" maxlenght="30")
+            br
+            button(type="submit" formaction="entrar") Entrar
+            button(type="submit" formaction="registrar") Registrar
+    p #{mensaje}  

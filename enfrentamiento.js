@@ -1,7 +1,7 @@
-const Paises=require("./pais");
+const Paises=require("./pais")
 
-const CARAS = 6;
-const MAXIMO_NORMAL = 3;
+const CARAS = 6
+const MAXIMO_NORMAL = 3
 
 /**
  * genera los vectores aleatorios de batalla para los dos paises, 
@@ -13,30 +13,30 @@ const MAXIMO_NORMAL = 3;
  * @returns cantidad de posiciones del vector de ataque que supera al de defensa
  */
 function atacar(paisA, paisD){
-     noPuedeAtacar(paisA,paisD);
-    let dadosA = [];
+     noPuedeAtacar(paisA,paisD)
+    let dadosA = []
     let dadosD = []; 
 
     for (let i=0; i<Math.min(paisA.ejercitos-1, MAXIMO_NORMAL); i++){
-        dadosA.push(tirarDado());
+        dadosA.push(tirarDado())
     }
 
     for (let i=0; i<Math.min(paisD.ejercitos, MAXIMO_NORMAL); i++){
-        dadosD.push(tirarDado());
+        dadosD.push(tirarDado())
     }
 
-    ordenar(dadosA);
-    ordenar(dadosD);
+    ordenar(dadosA)
+    ordenar(dadosD)
 
-    let ataqueGana = 0;
-    let enfr = enfrentamientos(paisA, paisD);
+    let ataqueGana = 0
+    let enfr = enfrentamientos(paisA, paisD)
     for (let i=0; i<enfr; i++){
         if (dadosA[i] > dadosD[i]){
-            ataqueGana++;
+            ataqueGana++
         }
     }
 
-    return ataqueGana;
+    return ataqueGana
 }
 function noPuedeAtacar(paisA,paisD){
     
@@ -55,7 +55,7 @@ function enfrentamientoMisil(paisA, paisD){
     noPuedeAtacarMisiles(paisA,paisD)
    
 
-    return 4-Paises.distancia(paisA,paisD);
+    return 4-Paises.distancia(paisA,paisD)
 } 
 function noPuedeAtacarMisiles(paisA,paisD){
     if(paisA.misiles<1){
@@ -76,7 +76,7 @@ function noPuedeAtacarMisiles(paisA,paisD){
  * @returns entero entre 1 y 6
  */
 function tirarDado(){
-    return Math.floor(Math.random()*CARAS)+1;
+    return Math.floor(Math.random()*CARAS)+1
 }
 
 /**
@@ -88,9 +88,9 @@ function ordenar(dados){
     for (let i=0; i<dados.length; i++){
         for (let j=i; j<dados.length; j++){
             if (dados[i] < dados[j]){
-                let aux = dados[i];
-                dados[i] = dados[j];
-                dados[j] = aux;
+                let aux = dados[i]
+                dados[i] = dados[j]
+                dados[j] = aux
             }
         }
     }
@@ -104,9 +104,9 @@ function ordenar(dados){
  * @returns el minimo de dados entre ataque y defensa o sea la cantidad de fichas totales que se pierden
  */
 function enfrentamientos(paisA, paisD){
-    return Math.min(paisA.ejercitos-1, paisD.ejercitos, MAXIMO_NORMAL);
+    return Math.min(paisA.ejercitos-1, paisD.ejercitos, MAXIMO_NORMAL)
 }
 
-exports.atacar=atacar;
-exports.enfrentamientos=enfrentamientos;
-exports.enfrentamientoMisil=enfrentamientoMisil;
+exports.atacar=atacar
+exports.enfrentamientos=enfrentamientos
+exports.enfrentamientoMisil=enfrentamientoMisil

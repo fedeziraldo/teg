@@ -1,6 +1,6 @@
-const MongoClient = require('mongodb').MongoClient;
+const MongoClient = require('mongodb').MongoClient
 
-let paises;
+let paises
 
 /**
  * carga la variable paises con los paises de la base y la envia a los clientes 
@@ -12,31 +12,31 @@ let paises;
  */
 function cargarPaises(url, nombredb, io, clientes){
     MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
-        if (err) throw err;
-        let dbo = db.db(nombredb);
+        if (err) throw err
+        let dbo = db.db(nombredb)
         dbo.collection("pais").find({}).toArray((err, result) => {
-            if (err) throw err;
-            paises = result;
-            desordenarPaises();
+            if (err) throw err
+            paises = result
+            desordenarPaises()
             for (let i=0; i<paises.length; i++){
-                paises[i].jugador = i% Object.keys(clientes).length;
-                paises[i].ejercitos = 10;
-                paises[i].misiles = i%2;
-                paises[i].limites = [];
+                paises[i].jugador = i% Object.keys(clientes).length
+                paises[i].ejercitos = 10
+                paises[i].misiles = i%2
+                paises[i].limites = []
             }
-            io.emit("iniciaJuego", paises);
+            io.emit("iniciaJuego", paises)
             dbo.collection("limite").find({}).toArray((err, result) => {
-                if (err) throw err;
+                if (err) throw err
                 for (let i=0; i<result.length; i++){
-                    let pais1 = buscarPais(result[i].pais1);
-                    let pais2 = buscarPais(result[i].pais2);
-                    pais1.limites.push(pais2);
-                    pais2.limites.push(pais1);
+                    let pais1 = buscarPais(result[i].pais1)
+                    let pais2 = buscarPais(result[i].pais2)
+                    pais1.limites.push(pais2)
+                    pais2.limites.push(pais1)
                 }
-                db.close();
-            });
-        });
-    });
+                db.close()
+            })
+        })
+    })
 }
 
 /**
@@ -47,9 +47,9 @@ function desordenarPaises(){
     for (let i=0; i<paises.length; i++){
         for (let j=0; j<paises.length; j++){
             if (Math.floor(Math.random()*2) == 0){
-                let aux = paises[i];
-                paises[i] = paises[j];
-                paises[j] = aux;
+                let aux = paises[i]
+                paises[i] = paises[j]
+                paises[j] = aux
             }
         }
     }
@@ -62,7 +62,7 @@ function desordenarPaises(){
 function buscarPais(id){
     for (let pais of paises){
         if (pais.id == id){
-            return pais;
+            return pais
         }
     }
 }
@@ -77,10 +77,10 @@ function buscarPais(id){
 function limita(pais, limite){
     for (let lim of pais.limites){
         if (lim == limite){
-            return true;
+            return true
         }
     }
-    return false;
+    return false
 }
 
 /**
@@ -94,17 +94,17 @@ function limita(pais, limite){
 function distancia(pais, limite){
 
     if (pais == limite){
-        return 0;
+        return 0
     }
 
     if (limita(pais, limite)){
-        return 1;
+        return 1
     }
 
     for (let lim of pais.limites){
         for (let limlim of lim.limites){
             if (limlim == limite){
-                return 2;
+                return 2
             }
         }
     }
@@ -113,16 +113,16 @@ function distancia(pais, limite){
         for (let limlim of lim.limites){
             for (let limlimlim of limlim.limites){
                 if (limlimlim == limite){
-                    return 3;
+                    return 3
                 }
             }
         }
     }
-    throw("muy lejos");
+    throw("muy lejos")
 }
 
-exports.buscarPais=buscarPais;
-exports.limita=limita;
-exports.distancia=distancia;
-exports.paises = paises;
-exports.cargarPaises = cargarPaises;
+exports.buscarPais=buscarPais
+exports.limita=limita
+exports.distancia=distancia
+exports.paises = paises
+exports.cargarPaises = cargarPaises

@@ -139,7 +139,7 @@ db.pais.insert([
         id: 20,
         nombre: 'China', 
         archivo: 'CHINA.png',
-        posX: 1129,
+        posX: 1229,
         posY: 29,
     },{
         id: 21,
@@ -230,7 +230,7 @@ db.pais.insert([
         nombre: 'India', 
         archivo: 'INDIA.png',
         posX: 1258,
-        posY: 522,
+        posY: 552,
     },
       {
         id: 34,
@@ -264,7 +264,7 @@ db.pais.insert([
         id: 38,
         nombre: 'Israel', 
         archivo: 'ISRAEL.png',
-        posX: 1059,
+        posX: 1089,
         posY: 529,
     },
       {
@@ -290,8 +290,8 @@ db.pais.insert([
     },
       {
         id: 42,
-        nombre: 'Kamtchatka', 
-        archivo: 'KAMTCHATKA.png',
+        nombre: 'Kamchatka', 
+        archivo: 'KAMCHATKA.png',
         posX: 1306,
         posY: 106,
     },
@@ -475,7 +475,7 @@ db.pais.insert([
         nombre: 'Turquia', 
         archivo: 'TURQUIA.png',
         posX: 1165,
-        posY: 438,
+        posY: 468,
     },
       {
         id: 69,
@@ -642,9 +642,10 @@ db.pais.insert([
     {pais1: 3, pais2: 15},
     {pais1: 61, pais2: 15},
     {pais1: 15, pais2: 57},
-    
+  ]) 
 
-    //intercontinentales 
+  //intercontinentales 
+  db.limite.insert([
 
     {pais1: 1, pais2:21 },
     {pais1: 1, pais2:42 },
@@ -664,9 +665,6 @@ db.pais.insert([
     {pais1:2 , pais2:34 },
     {pais1: 57, pais2:35 },
     {pais1: 57, pais2:59 },
-    
-
-
  ])
  db.cartaGlobal.insert([
     {tipo: "Combate clásico", cantidad: 20},
@@ -694,28 +692,28 @@ db.continente.insert([
 },
 {
     id: 2,
-    nombre: "America Central,
+    nombre: "America Central",
     fichas: 3,
     escudo: "Avión",
     paises: []  
 },
 {
     id: 3,
-    nombre: "America del Norte,
+    nombre: "America del Norte",
     fichas: 6,
     escudo: "Super Tarjeta",
     paises: []  
 },
 {
     id: 4,
-    nombre: "America del Sur,
+    nombre: "America del Sur",
     fichas: 4,
     escudo: "Avion ancla",
     paises: []  
 },
 {
     id: 5,
-    nombre: "Asia,
+    nombre: "Asia",
     fichas: 8,
     escudo: "Super tarjeta",
     paises: []  
@@ -729,7 +727,7 @@ db.continente.insert([
 },
 {
     id: 7,
-    nombre: "Oceania,
+    nombre: "Oceania",
     fichas: 3,
     escudo: "Soldado",
     paises: []  

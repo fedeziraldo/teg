@@ -30,8 +30,8 @@ function cargarPaises(url, nombredb, io, clientes){
                 for (let i=0; i<result.length; i++){
                     let pais1 = buscarPais(result[i].pais1)
                     let pais2 = buscarPais(result[i].pais2)
-                    pais1.limites.push(pais2)
-                    pais2.limites.push(pais1)
+                    pais1.limites.push(result[i].pais2)
+                    pais2.limites.push(result[i].pais1)
                 }
                 db.close()
             })
@@ -76,7 +76,7 @@ function buscarPais(id){
  */
 function limita(pais, limite){
     for (let lim of pais.limites){
-        if (lim == limite){
+        if (buscarPais(lim) == limite){
             return true
         }
     }
@@ -102,17 +102,17 @@ function distancia(pais, limite){
     }
 
     for (let lim of pais.limites){
-        for (let limlim of lim.limites){
-            if (limlim == limite){
+        for (let limlim of buscarPais(lim).limites){
+            if (buscarPais(limlim) == limite){
                 return 2
             }
         }
     }
 
     for (let lim of pais.limites){
-        for (let limlim of lim.limites){
-            for (let limlimlim of limlim.limites){
-                if (limlimlim == limite){
+        for (let limlim of buscarPais(lim).limites){
+            for (let limlimlim of buscarPais(limlim).limites){
+                if (buscarPais(limlimlim) == limite){
                     return 3
                 }
             }

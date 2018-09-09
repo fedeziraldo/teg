@@ -21,7 +21,7 @@ function cargarPaises(url, nombredb, io, clientes){
             for (let i=0; i<paises.length; i++){
                 paises[i].jugador = i% Object.keys(clientes).length
                 paises[i].ejercitos = 10
-                paises[i].misiles = i%2
+                paises[i].misiles = Math.floor(Math.random()*2)
                 paises[i].limites = []
             }
             io.emit("iniciaJuego", paises)

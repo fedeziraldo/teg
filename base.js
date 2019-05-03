@@ -1,6 +1,6 @@
-﻿use fede;
+﻿db = db.getSiblingDB('teg')
 db.dropDatabase()
-db.pais.insert([
+db.paises.insert([
     {
         id:1,
         nombre:'Alaska',
@@ -509,7 +509,7 @@ db.pais.insert([
     
 //continente sudamerica
     
-  db.limite.insert([
+  db.limites.insert([
     {pais1: 6, pais2: 19},
     {pais1: 6, pais2: 70},
     {pais1: 6, pais2: 10},
@@ -666,7 +666,7 @@ db.pais.insert([
     {pais1: 57, pais2:35 },
     {pais1: 57, pais2:59 },
  ])
- db.cartaGlobal.insert([
+ db.cartaGlobales.insert([
     {tipo: "Combate clásico", cantidad: 20},
     {tipo: "Nieve", defensa: 1, cantidad: 4},
     {tipo: "Viento a favor", ataque: 1, cantidad: 4},
@@ -682,7 +682,7 @@ db.pais.insert([
     {tipo: "Descanso Amarillo", color: "AMARILLO", cantidad: 1}
  ])
 
-db.continente.insert([
+db.continentes.insert([
 {
     id: 1,
     nombre: "Africa",
@@ -734,7 +734,7 @@ db.continente.insert([
 },
 ])
 
-db.escudo.insert([
+db.escudos.insert([
     {tipo: "Avión", valor: [1]},
     {tipo: "Soldado", valor: [2]},
     {tipo: "Ancla", valor: [4]},
@@ -753,7 +753,7 @@ db.escudo.insert([
     }
 ])
 
-db.objetivo.insert([
+db.objetivos.insert([
     {
         id: 1,
         nombre: "Ocupar Europa y America del Sur",

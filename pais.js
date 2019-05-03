@@ -11,7 +11,7 @@ let paises
  * @param {*} clientes 
  */
 function cargarPaises(url, nombredb, io, clientes){
-    MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
+    MongoClient.connect(url, { useNewUrlParser = true }, (err, db) => {
         if (err) throw err
         let dbo = db.db(nombredb)
         dbo.collection("pais").find({}).toArray((err, result) => {
@@ -126,3 +126,53 @@ exports.limita=limita
 exports.distancia=distancia
 exports.paises = paises
 exports.cargarPaises = cargarPaises
+
+class Pais {
+    constructor(pais){
+        this.id = pais.id
+        this.nombre = pais.nombre
+        this.archivo = pais.archivo
+        this.posX = pais.posX
+        this.posY = pais.posY
+        this.limites = []
+    }
+
+    limita(limite){
+        for (let lim of this.limites){
+            if (lim == limite.id){
+                return true
+            }
+        }
+        return false
+    }
+
+    distancia(limite){
+
+        if (this == limite){
+            return 0
+        }
+    
+        if (limita(this, limite)){
+            return 1
+        }
+    
+        for (let lim of this.limites){
+            for (let limlim of buscarPais(lim).limites){
+                if (buscarPais(limlim) == limite){
+                    return 2
+                }
+            }
+        }
+    
+        for (let lim of this.limites){
+            for (let limlim of buscarPais(lim).limites){
+                for (let limlimlim of buscarPais(limlim).limites){
+                    if (buscarPais(limlimlim) == limite){
+                        return 3
+                    }
+                }
+            }
+        }
+        throw("muy lejos")
+    }
+}

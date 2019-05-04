@@ -7,6 +7,6 @@ const limiteSchema = new mongoose.Schema({
     pais2: Number
 })
 
-const Limite = mongoose.model('Limite', limiteSchema)
+const Limite = mongoose.model('limites', limiteSchema)
 
 exports.Limite = Limite

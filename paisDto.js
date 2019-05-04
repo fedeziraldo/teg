@@ -1,5 +1,5 @@
 class PaisDto {
-    constructor(pais){
+    constructor(pais) {
         this.id = pais.id
         this.nombre = pais.nombre
         this.archivo = pais.archivo

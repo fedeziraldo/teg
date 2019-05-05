@@ -41,16 +41,12 @@ server.on("saleJugador", nombre => {
 server.on("resultadoAtaque", resultado => {
     let imagen = document.getElementById(resultado.defensa.id)
     imagen.src = `${colores[resultado.defensa.jugador]}/${resultado.defensa.archivo}`
-    let div = document.getElementById("f" + resultado.ataque.id)
-    div.innerHTML = `ejercitos:${resultado.ataque.ejercitos}`
-    div = document.getElementById("f" + resultado.defensa.id)
-    div.innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
+    document.getElementById("f" + resultado.ataque.id).innerHTML = `ejercitos:${resultado.ataque.ejercitos}`
+    document.getElementById("f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
 })
 server.on("resultadoMisil", resultado => {
-    let div = document.getElementById("m" + resultado.ataque.id)
-    div.innerHTML = `misiles:${resultado.ataque.misiles}`
-    div = document.getElementById("f" + resultado.defensa.id)
-    div.innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
+    document.getElementById("m" + resultado.ataque.id).innerHTML = `misiles:${resultado.ataque.misiles}`
+    document.getElementById("f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
 
 })
 server.on("jugadaInvalida", resultado => {
@@ -62,14 +58,13 @@ server.on("iniciaJuego", paises => {
     let mapa = document.getElementById("mapa")
     botonPasarTurno = document.createElement('button')
     document.body.appendChild(botonPasarTurno)
-    botonPasarTurno.addEventListener('click', pasarServer)
+    botonPasarTurno.addEventListener('click', pasarTurno)
     botonPasarTurno.innerHTML = 'Pasar Turno'
     inicio.style.display = "none"
 
     let imagen = new Image()
     imagen.src = "teg.jpg"
-    imagen.id = "mundo"
-    imagen.addEventListener("dragstart", allowDrop)
+    imagen.id = "teg"
     mapa.appendChild(imagen)
     for (let pais of paises) {
         imagen = new Image()
@@ -80,7 +75,6 @@ server.on("iniciaJuego", paises => {
         imagen.style.left = pais.posX + "px"
         imagen.style.top = pais.posY + "px"
         mapa.appendChild(imagen)
-        imagen.addEventListener("dragstart", allowDrop)
         imagen.addEventListener("load", ev => {
 
             if (document.getElementById("f" + pais.id)) {
@@ -90,11 +84,12 @@ server.on("iniciaJuego", paises => {
             let fichas = document.createElement("div")
             fichas.id = "f" + pais.id
             fichas.draggable = "true"
+            fichas.addEventListener("click", ponerFicha)
             fichas.addEventListener("dragover", allowDrop)
             fichas.addEventListener("dragstart", enfrentaA)
             fichas.addEventListener("drop", enfrentaD)
             fichas.style.position = "absolute"
-            fichas.style.left = pais.posX + ev.target.width * .4 + "px"
+            fichas.style.left = pais.posX + ev.target.width * .2 + "px"
             fichas.style.top = pais.posY + ev.target.height * .4 + "px"
             fichas.innerHTML = `ejercitos:${pais.ejercitos}`
             mapa.appendChild(fichas)
@@ -106,7 +101,7 @@ server.on("iniciaJuego", paises => {
             misiles.addEventListener("dragstart", misilA)
             misiles.addEventListener("drop", enfrentaD)
             misiles.style.position = "absolute"
-            misiles.style.left = pais.posX + ev.target.width * .4 + "px"
+            misiles.style.left = pais.posX + ev.target.width * .2 + "px"
             misiles.style.top = pais.posY + ev.target.height * .6 + "px"
             misiles.innerHTML = `misiles:${pais.misiles}`;
             mapa.appendChild(misiles)
@@ -114,8 +109,8 @@ server.on("iniciaJuego", paises => {
     }
 })
 
-server.on("cartaGlobal", carta => {
-    document.getElementById("cartaGlobal").innerHTML = carta.tipo
+server.on("ponerFicha", pais => {
+    document.getElementById("f" + pais.id).innerHTML = `ejercitos:${pais.ejercitos}`
 
 })
 
@@ -139,6 +134,9 @@ function enfrentaD(ev) {
 function misilA(ev) {
     ev.dataTransfer.setData("misil", ev.target.id.substr(1))
 }
-function pasarServer() {
+function pasarTurno() {
     server.emit('pasarTurno')
+}
+function ponerFicha(ev) {
+    server.emit('ponerFicha', ev.target.id.substr(1))
 }

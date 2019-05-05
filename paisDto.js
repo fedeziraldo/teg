@@ -5,7 +5,8 @@ class PaisDto {
         this.archivo = pais.archivo
         this.posX = pais.posX
         this.posY = pais.posY
-        this.ejercitos = 10
+        this.jugador = 0
+        this.ejercitos = 1
         this.misiles = 3
     }
 }

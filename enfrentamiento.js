@@ -35,26 +35,6 @@ function tirarDado() {
     return Math.floor(Math.random() * CARAS) + 1
 }
 
-function copiar(vector) {
-    aux = []
-    for (elem of vector) {
-        aux.push(elem)
-    }
-    return aux
-}
-
-function desordenar(vector) {
-    for (let i = 0; i < vector.length; i++) {
-        for (let j = 0; j < vector.length; j++) {
-            if (Math.floor(Math.random() * 2) == 0) {
-                let aux = vector[i]
-                vector[i] = vector[j]
-                vector[j] = aux
-            }
-        }
-    }
-}
-
 function ordenar(dados) {
     for (let i = 0; i < dados.length; i++) {
         for (let j = i; j < dados.length; j++) {

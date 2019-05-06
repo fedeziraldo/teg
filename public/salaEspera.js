@@ -111,12 +111,6 @@ server.on("ponerFicha", pais => {
     document.getElementById("f" + pais.id).innerHTML = `ejercitos:${pais.ejercitos}`
 })
 
-server.on("canjeMisil", pais => {
-    document.getElementById("f" + pais.id).innerHTML = `ejercitos:${pais.ejercitos}`
-    document.getElementById("m" + pais.id).innerHTML = `misiles:${pais.ejercitos}`
-
-})
-
 function allowDrop(ev) {
     ev.preventDefault()
 }

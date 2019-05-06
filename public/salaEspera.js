@@ -13,10 +13,6 @@ function enviarNombre(nombre) {
     server.emit("nombre", nombre)
 }
 
-server.on("volverHome", home => {
-    location = home
-})
-
 server.on("listaJugadores", lista => {
     let ul = document.getElementById("jugadores")
     for (let j of lista) {
@@ -45,8 +41,10 @@ server.on("resultadoAtaque", resultado => {
     document.getElementById("f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
 })
 server.on("resultadoMisil", resultado => {
+    document.getElementById("f" + resultado.ataque.id).innerHTML = `ejercitos:${resultado.ataque.ejercitos}`
     document.getElementById("m" + resultado.ataque.id).innerHTML = `misiles:${resultado.ataque.misiles}`
     document.getElementById("f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
+    document.getElementById("m" + resultado.defensa.id).innerHTML = `misiles:${resultado.defensa.misiles}`
 
 })
 server.on("jugadaInvalida", resultado => {
@@ -86,7 +84,7 @@ server.on("iniciaJuego", paises => {
             fichas.draggable = "true"
             fichas.addEventListener("click", ponerFicha)
             fichas.addEventListener("dragover", allowDrop)
-            fichas.addEventListener("dragstart", enfrentaA)
+            fichas.addEventListener("dragstart", ataqueA)
             fichas.addEventListener("drop", enfrentaD)
             fichas.style.position = "absolute"
             fichas.style.left = pais.posX + ev.target.width * .2 + "px"
@@ -111,6 +109,11 @@ server.on("iniciaJuego", paises => {
 
 server.on("ponerFicha", pais => {
     document.getElementById("f" + pais.id).innerHTML = `ejercitos:${pais.ejercitos}`
+})
+
+server.on("canjeMisil", pais => {
+    document.getElementById("f" + pais.id).innerHTML = `ejercitos:${pais.ejercitos}`
+    document.getElementById("m" + pais.id).innerHTML = `misiles:${pais.ejercitos}`
 
 })
 
@@ -118,7 +121,7 @@ function allowDrop(ev) {
     ev.preventDefault()
 }
 
-function enfrentaA(ev) {
+function ataqueA(ev) {
     ev.dataTransfer.setData("ataque", ev.target.id.substr(1))
 }
 

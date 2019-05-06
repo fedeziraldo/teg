@@ -5,22 +5,22 @@ db.paises.insert([
     id: 1,
     nombre: 'Alaska',
     archivo: 'ALASKA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 27,
+    posY: 49,
   },
   {
     id: 2,
     nombre: 'Albania',
     archivo: 'ALBANIA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 1046,
+    posY: 428,
   },
   {
     id: 3,
     nombre: 'Alemania',
     archivo: 'ALEMANIA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 836,
+    posY: 339,
   },
   {
     id: 4,
@@ -40,8 +40,8 @@ db.paises.insert([
     id: 6,
     nombre: 'Argentina',
     archivo: 'ARGENTINA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 293,
+    posY: 954,
   },
 
   {
@@ -55,43 +55,43 @@ db.paises.insert([
     id: 8,
     nombre: 'Bielorrusia',
     archivo: 'BIELORRUSIA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 981,
+    posY: 152,
   },
   {
     id: 9,
     nombre: 'Bolivia',
     archivo: 'BOLIVIA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 260,
+    posY: 866,
   },
   {
     id: 10,
     nombre: 'Brasil',
     archivo: 'BRASIL.png',
-    posX: 1224,
-    posY: 837,
+    posX: 252,
+    posY: 789,
   },
   {
     id: 11,
     nombre: 'California',
     archivo: 'CALIFORNIA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 58,
+    posY: 398,
   },
   {
     id: 12,
     nombre: 'Canada',
     archivo: 'CANADA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 67,
+    posY: 114,
   },
   {
     id: 13,
     nombre: 'Colombia',
     archivo: 'COLOMBIA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 176,
+    posY: 691,
   },
   {
     id: 14,
@@ -104,15 +104,15 @@ db.paises.insert([
     id: 15,
     nombre: 'Croacia',
     archivo: 'CROACIA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 916,
+    posY: 490,
   },
   {
     id: 16,
     nombre: 'Cuba',
     archivo: 'CUBA.png',
-    posX: 1224,
-    posY: 837,
+    posX: 321,
+    posY: 480,
   },
   {
     id: 17,
@@ -125,21 +125,21 @@ db.paises.insert([
     id: 18,
     nombre: 'Chicago',
     archivo: 'CHICAGO.png',
-    posX: 1224,
-    posY: 837,
+    posX: 260,
+    posY: 277,
   },
   {
     id: 19,
     nombre: 'Chile',
     archivo: 'CHILE.png',
-    posX: 1224,
-    posY: 837,
+    posX: 208,
+    posY: 818,
   },
   {
     id: 20,
     nombre: 'China',
     archivo: 'CHINA.png',
-    posX: 1229,
+    posX: 1230,
     posY: 29,
   }, {
     id: 21,
@@ -507,9 +507,9 @@ db.paises.insert([
   }
 ])
 
-//continente sudamerica
 
 db.limites.insert([
+  //paises sudamerica
   { pais1: 6, pais2: 19 },
   { pais1: 6, pais2: 70 },
   { pais1: 6, pais2: 10 },
@@ -522,16 +522,11 @@ db.limites.insert([
   { pais1: 10, pais2: 56 },
   { pais1: 10, pais2: 71 },
   { pais1: 10, pais2: 13 },
-
   { pais1: 10, pais2: 19 },
   { pais1: 13, pais2: 71 },
   { pais1: 13, pais2: 19 },
 
-
-
-
   //paises america central
-
   { pais1: 16, pais2: 40 },
   { pais1: 16, pais2: 32 },
   { pais1: 16, pais2: 49 },
@@ -541,14 +536,12 @@ db.limites.insert([
   { pais1: 40, pais2: 50 },
 
   //paises oceania
-
   { pais1: 7, pais2: 67 },
   { pais1: 7, pais2: 27 },
   { pais1: 7, pais2: 64 },
   { pais1: 7, pais2: 65 },
   { pais1: 27, pais2: 67 },
   { pais1: 54, pais2: 65 },
-
 
   //paises Africa
   { pais1: 24, pais2: 60 },
@@ -585,7 +578,6 @@ db.limites.insert([
   { pais1: 31, pais2: 37 },
 
   // paises Asia
-
   { pais1: 21, pais2: 42 },
   { pais1: 21, pais2: 20 },
   { pais1: 42, pais2: 41 },
@@ -618,7 +610,6 @@ db.limites.insert([
   { pais1: 47, pais2: 33 },
 
   // paises Europa
-
   { pais1: 36, pais2: 22 },
   { pais1: 36, pais2: 52 },
   { pais1: 52, pais2: 28 },
@@ -642,11 +633,8 @@ db.limites.insert([
   { pais1: 3, pais2: 15 },
   { pais1: 61, pais2: 15 },
   { pais1: 15, pais2: 57 },
-])
 
-//intercontinentales 
-db.limite.insert([
-
+  //intercontinentales 
   { pais1: 1, pais2: 21 },
   { pais1: 1, pais2: 42 },
   { pais1: 31, pais2: 36 },
@@ -666,6 +654,7 @@ db.limite.insert([
   { pais1: 57, pais2: 35 },
   { pais1: 57, pais2: 59 },
 ])
+
 db.cartaGlobales.insert([
   { tipo: "Combate clásico", cantidad: 20 },
   { tipo: "Nieve", defensa: 1, cantidad: 4 },

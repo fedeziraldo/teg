@@ -33,8 +33,8 @@ Pais.find((err, paises) => {
 	if (err) return console.error(err)
 
 	for (let pais of paises) {
-		paisDto = new paisDto.PaisDto(pais)
-		paisesDto.push(paisDto)
+		let paisDto2 = new paisDto.PaisDto(pais)
+		paisesDto.push(paisDto2)
 	}
 
 	Limite.find((err, limites) => {

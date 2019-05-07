@@ -4,7 +4,7 @@ const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const bodyParser = require('body-parser')
 const enfrentamiento = require("./enfrentamiento")
-const PaisDto = require("./paisDto").PaisDto
+const paisDto = require("./paisDto")
 const Pais = require("./paises").Pais
 const Limite = require('./limites').Limite
 const CartaGlobal = require('./cartaGlobales').CartaGlobal
@@ -20,6 +20,7 @@ const paisesDto = []
 
 const FASE8 = 8
 const FASE4 = 4
+const MISILES = 6
 let fase8 = true
 let fase4 = false
 let faseAtaque = false
@@ -32,7 +33,7 @@ Pais.find((err, paises) => {
 	if (err) return console.error(err)
 
 	for (let pais of paises) {
-		paisDto = new PaisDto(pais)
+		paisDto = new paisDto.PaisDto(pais)
 		paisesDto.push(paisDto)
 	}
 
@@ -49,7 +50,7 @@ Pais.find((err, paises) => {
 CartaGlobal.find((err, cartaGlobales) => {
 	if (err) return console.error(err)
 	for (let cartaGlobal of cartaGlobales) {
-		for (let i=0; i<cartaGlobal.cantidad; i++){
+		for (let i = 0; i < cartaGlobal.cantidad; i++) {
 			cargaCartaGlobales.push(cartaGlobal)
 		}
 	}
@@ -115,14 +116,19 @@ io.on('connection', cliente => {
 		const paisDtoD = paisesDto[ataque.defensa - 1]
 		try {
 			validarTurno(cliente, paisDtoA)
-			validarAtaque(paisDtoA, paisDtoD)
-			if (paisDtoA.jugador == paisDtoD.jugador) {
-				paisDtoA.ejercitos-=6
+			const distancia = validarAtaque(paisDtoA, paisDtoD)
+			if (distancia == 0) {
+				validarFaseRecarga()
+				paisDtoA.ejercitos -= MISILES
 				paisDtoD.misiles++
+			} else if (distancia != 1) {
+				throw ("no son limitrofes")
 			} else if (paisDtoA.jugador == paisDtoD.jugador) {
+				validarFaseReagrupe()
 				paisDtoA.ejercitos--
 				paisDtoD.ejercitos++
 			} else {
+				validarFaseAtaque()
 				const dadosA = enfrentamiento.tirarDadosA(paisDtoA)
 				const dadosD = enfrentamiento.tirarDadosD(paisDtoD)
 				const enfrentamientos = enfrentamiento.enfrentamientos(paisDtoA, paisDtoD)
@@ -147,13 +153,21 @@ io.on('connection', cliente => {
 		try {
 			validarTurno(cliente, paisDtoA)
 			const distancia = validarMisil(paisDtoA, paisDtoD)
-			paisDtoA.misiles--
 			if (paisDtoA == paisDtoD) {
-				paisDtoD.ejercitos+=6
+				validarFaseRecarga()
+				paisDtoD.ejercitos += MISILES
+				paisDtoA.misiles--
 			} else if (paisDtoA.jugador == paisDtoD.jugador) {
+				validarFaseReagrupe()
 				paisDtoD.misiles++
+				paisDtoA.misiles--
 			} else {
+				validarFaseAtaque()
 				const daño = 4 - distancia
+				if (paisDtoD.ejercitos <= daño) {
+					throw ("no se puede matar un pais")
+				}
+				paisDtoA.misiles--
 				paisDtoD.ejercitos -= daño
 			}
 			io.emit("resultadoMisil", { ataque: paisDtoA, defensa: paisDtoD })
@@ -168,7 +182,14 @@ io.on('connection', cliente => {
 			if (fichas > 0) {
 				throw ("quedan fichas")
 			}
-			turno++
+			if (faseAtaque) {
+				faseAtaque = false
+				faseReagrupe = true
+			} else if (faseReagrupe) {
+				faseReagrupe = false
+				faseAtaque = true
+				turno++
+			}
 			if (turno % jugadores.length == 0) {
 				if (fase8) {
 					fase8 = false
@@ -177,13 +198,11 @@ io.on('connection', cliente => {
 				} else if (fase4) {
 					fase4 = false
 					faseAtaque = true
-				} else if (faseAtaque) {
-					faseAtaque = false
-					faseReagrupe = true
 				} else if (faseReagrupe) {
 					faseReagrupe = false
+					faseAtaque = false
 					faseRecarga = true
-					fichas = 1
+					fichas = parseInt(paisDto.paisesJugador(turno % jugadores.length) / 2)
 				} else if (faseRecarga) {
 					faseRecarga = false
 					faseAtaque = true
@@ -193,14 +212,8 @@ io.on('connection', cliente => {
 					fichas = FASE8
 				} else if (fase4) {
 					fichas = FASE4
-				} else if (faseAtaque) {
-					faseAtaque = false
-					faseReagrupe = true
-				} else if (faseReagrupe) {
-					faseReagrupe = false
-					faseAtaque = true
-				}else if (faseRecarga) {
-					fichas = 1
+				} else if (faseRecarga) {
+					fichas = parseInt(paisDto.paisesJugador(turno % jugadores.length) / 2)
 				}
 			}
 		} catch (e) {
@@ -211,12 +224,28 @@ io.on('connection', cliente => {
 		const paisDto = paisesDto[idPais - 1]
 		try {
 			validarTurno(cliente, paisDto)
-			if (fichas < 1) {
-				throw ("no se puede poner ficha ahora")
+			valudarFaseRecarga()
+			if (fichas <= 0) {
+				throw ("no quedan fichas para poner")
 			}
 			paisDto.ejercitos++
 			fichas--
-			io.emit("ponerFicha", paisDto)
+			io.emit("ponerPais", paisDto)
+		} catch (e) {
+			cliente.emit('jugadaInvalida', e)
+		}
+	})
+	cliente.on('ponerMisil', idPais => {
+		const paisDto = paisesDto[idPais - 1]
+		try {
+			validarTurno(cliente, paisDto)
+			valudarFaseRecarga()
+			if (fichas <= MISILES) {
+				throw ("no hay suficientes fichas")
+			}
+			paisDto.misiles++
+			fichas -= MISILES
+			io.emit("ponerPais", paisDto)
 		} catch (e) {
 			cliente.emit('jugadaInvalida', e)
 		}
@@ -236,9 +265,7 @@ function validarAtaque(paisDtoA, paisDtoD) {
 	if (paisDtoA.ejercitos <= 1) {
 		throw ('no hay suficiente ejercito')
 	}
-	if (!cargaPaises[paisDtoA.id - 1].limita(cargaPaises[paisDtoD.id - 1])) {
-		throw ('no son limitrofes')
-	}
+	return cargaPaises[paisDtoA.id - 1].distancia(cargaPaises[paisDtoD.id - 1])
 }
 
 function validarMisil(paisDtoA, paisDtoD) {
@@ -246,6 +273,30 @@ function validarMisil(paisDtoA, paisDtoD) {
 		throw ('No hay misiles')
 	}
 	return cargaPaises[paisDtoA.id - 1].distancia(cargaPaises[paisDtoD.id - 1])
+}
+
+function valudarFaseRecarga() {
+	if (!faseRecarga){
+		throw ("no se puede poner fichas ahora")
+	}
+}
+
+function validarFaseAtaque() {
+	if (!faseAtaque){
+		throw ("no se puede atacar ahora")
+	}
+}
+
+function validarFaseRecarga() {
+	if (!faseRecarga){
+		throw ("no se puede comprar o vender misiles ahora")
+	}
+}
+
+function validarFaseReagrupe() {
+	if (!faseReagrupe){
+		throw ("no se puede trasladar ejercitos ni misiles")
+	}
 }
 
 function copiar(vector) {

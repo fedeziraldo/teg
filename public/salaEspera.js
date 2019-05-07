@@ -107,8 +107,9 @@ server.on("iniciaJuego", paises => {
     }
 })
 
-server.on("ponerFicha", pais => {
+server.on("ponerPais", pais => {
     document.getElementById("f" + pais.id).innerHTML = `ejercitos:${pais.ejercitos}`
+    document.getElementById("m" + pais.id).innerHTML = `misiles:${pais.ejercitos}`
 })
 
 function allowDrop(ev) {

@@ -43,7 +43,8 @@ class JugadorDto {
         for (let valor0 in cartas[0].escudo.valor) {
             for (let valor1 in cartas[1].escudo.valor) {
                 for (let valor2 in cartas[2].escudo.valor) {
-                    if (valor0 + valor1 + valor2 == JugadorDto.SUMA_CANJE) {
+                    if (valor0 + valor1 + valor2 == JugadorDto.SUMA_CANJE ||
+                        valor0 == valor1 && valor1 == valor2 ) {
                         return true
                     }
                 }

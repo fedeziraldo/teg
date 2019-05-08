@@ -24,7 +24,7 @@ function tirarDadosD(paisDtoD) {
 }
 
 function tirarDados(cantidad) {
-    dados = []
+    let dados = []
     for (let i = 0; i < Math.min(cantidad, MAXIMO_NORMAL); i++) {
         dados.push(tirarDado())
     }

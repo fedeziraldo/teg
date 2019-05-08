@@ -1,6 +1,4 @@
-const mongooseTeg = require('./mongooseTeg')
-
-const mongoose = mongooseTeg.mongoose
+const mongoose = require('./mongooseTeg').mongoose
 
 const limiteSchema = new mongoose.Schema({
     pais1: Number,

@@ -677,49 +677,42 @@ db.continentes.insert([
     nombre: "Africa",
     fichas: 4,
     escudo: "Soldado ancla",
-    paises: []
   },
   {
     id: 2,
     nombre: "America Central",
     fichas: 3,
     escudo: "Avión",
-    paises: []
   },
   {
     id: 3,
     nombre: "America del Norte",
     fichas: 6,
     escudo: "Super Tarjeta",
-    paises: []
   },
   {
     id: 4,
     nombre: "America del Sur",
     fichas: 4,
     escudo: "Avion ancla",
-    paises: []
   },
   {
     id: 5,
     nombre: "Asia",
     fichas: 8,
     escudo: "Super tarjeta",
-    paises: []
   },
   {
     id: 6,
     nombre: "Europa",
     fichas: 8,
     escudo: "Super tarjeta",
-    paises: []
   },
   {
     id: 7,
     nombre: "Oceania",
     fichas: 3,
     escudo: "Soldado",
-    paises: []
   },
 ])
 
@@ -746,26 +739,21 @@ db.objetivos.insert([
   {
     id: 1,
     nombre: "Ocupar Europa y America del Sur",
-    metodo: "europaYAmericaSur"
   },
   {
     id: 2,
     nombre: "Ocupar America del Norte y Oceania",
-    metodo: "americaNorteYOceania"
   },
   {
     id: 3,
     nombre: "Ocupar Asia y America del Central",
-    metodo: "asiaYAmericaCentral"
   },
   {
     id: 4,
     nombre: "Ocupar America del Norte, 8 de Asia y 4 de Europa",
-    metodo: "americaNorte8Asia4Europa"
   },
   {
     id: 5,
     nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
-    metodo: "cuatroAmNorte4Europa4Asia3Africa3AmSur3AmCentral3Oceania"
   }
 ])

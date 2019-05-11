@@ -238,6 +238,7 @@ io.on('connection', cliente => {
 				} else if (faseRecarga) {
 					faseRecarga = false
 					faseAtaque = true
+					io.emit("cartaGlobal", cargaCartaGlobales.pop())
 				}
 			} else {
 				if (fase8) {

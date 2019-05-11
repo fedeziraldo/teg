@@ -2,6 +2,8 @@ const server = io()
 
 const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
 
+let escala = .5
+
 const inicio = document.getElementById("inicio")
 inicio.addEventListener("click", iniciar)
 
@@ -92,7 +94,7 @@ server.on("iniciaJuego", paises => {
 
             let misiles = document.createElement("div")
             misiles.id = "m" + pais.id
-            misiles.draggable = "true"
+            misiles.draggable = true
             misiles.addEventListener("click", ponerMisil)
             misiles.addEventListener("dragover", allowDrop)
             misiles.addEventListener("dragstart", misilA)
@@ -114,6 +116,10 @@ server.on("ponerPais", pais => {
 server.on("jugador", jugador => {
     document.getElementById("jugador").innerHTML = `${jugador.nombre} ${colores[jugador.id]}`
     document.getElementById("objetivo").innerHTML = `${jugador.objetivo.nombre}`
+})
+
+server.on("cartaGlobal", cartaGlobal => {
+    document.getElementById("cartaGlobal").innerHTML = cartaGlobal.tipo
 })
 
 function allowDrop(ev) {

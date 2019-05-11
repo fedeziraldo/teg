@@ -139,7 +139,7 @@ db.paises.insert([
     id: 20,
     nombre: 'China',
     archivo: 'CHINA.png',
-    posX: 1230,
+    posX: 1231,
     posY: 29,
   }, {
     id: 21,

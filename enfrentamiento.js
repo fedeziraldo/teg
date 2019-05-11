@@ -11,35 +11,35 @@ function atacar(dadosA, dadosD, enfrentamientos) {
     return ataqueGana
 }
 
-function enfrentamientos(paisDtoA, paisDtoD) {
-    return Math.min(paisDtoA.ejercitos - 1, paisDtoD.ejercitos, MAXIMO_NORMAL)
+function enfrentamientos(ejercitosA, ejercitosD) {
+    return Math.min(ejercitosA - 1, ejercitosD, MAXIMO_NORMAL)
 }
 
-function tirarDadosA(paisDtoA) {
-    return tirarDados(paisDtoA.ejercitos - 1)
+function tirarDadosA(ejercitosA, ejercitosD) {
+    return tirarDados(Math.min(ejercitosA - 1, MAXIMO_NORMAL + duplica(ejercitosA, ejercitosD)))
 }
 
-function tirarDadosD(paisDtoD) {
-    return tirarDados(paisDtoD.ejercitos)
+function tirarDadosD(ejercitos) {
+    return tirarDados(Math.min(ejercitos, MAXIMO_NORMAL))
 }
 
 function tirarDados(cantidad) {
-    let dados = []
-    for (let i = 0; i < Math.min(cantidad, MAXIMO_NORMAL); i++) {
+    const dados = []
+    for (let i = 0; i < cantidad; i++) {
         dados.push(tirarDado())
     }
     return ordenar(dados)
 }
 
 function tirarDado() {
-    return Math.floor(Math.random() * CARAS) + 1
+    return Math.ceil(Math.random() * CARAS)
 }
 
 function ordenar(dados) {
     for (let i = 0; i < dados.length; i++) {
         for (let j = i; j < dados.length; j++) {
             if (dados[i] < dados[j]) {
-                let aux = dados[i]
+                const aux = dados[i]
                 dados[i] = dados[j]
                 dados[j] = aux
             }
@@ -47,6 +47,11 @@ function ordenar(dados) {
     }
     return dados
 }
+
+function duplica(ejercitosA, ejercitosD){
+    return ejercitosA >= 2*ejercitosD && ejercitosD >= MAXIMO_NORMAL ? 1 : 0
+}
+
 exports.atacar = atacar
 exports.enfrentamientos = enfrentamientos
 exports.tirarDadosD = tirarDadosD

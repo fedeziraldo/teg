@@ -34,40 +34,38 @@ server.on("saleJugador", nombre => {
     }
 })
 
-server.on("resultadoAtaque", resultado => {
+server.on("resultado", resultado => {
     let imagen = document.getElementById(resultado.defensa.id)
     imagen.src = `${colores[resultado.defensa.jugador]}/${resultado.defensa.archivo}`
-    document.getElementById("f" + resultado.ataque.id).innerHTML = `ejercitos:${resultado.ataque.ejercitos}`
-    document.getElementById("f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
-})
-server.on("resultadoMisil", resultado => {
     document.getElementById("f" + resultado.ataque.id).innerHTML = `ejercitos:${resultado.ataque.ejercitos}`
     document.getElementById("m" + resultado.ataque.id).innerHTML = `misiles:${resultado.ataque.misiles}`
     document.getElementById("f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
     document.getElementById("m" + resultado.defensa.id).innerHTML = `misiles:${resultado.defensa.misiles}`
-
 })
+
 server.on("jugadaInvalida", resultado => {
     alert(resultado)
 
 })
 
 server.on("iniciaJuego", paises => {
-    let mapa = document.getElementById("mapa")
-    botonPasarTurno = document.createElement('button')
-    document.body.appendChild(botonPasarTurno)
+    const mapa = document.getElementById("mapa")
+    const botonPasarTurno = document.createElement('button')
     botonPasarTurno.addEventListener('click', pasarTurno)
     botonPasarTurno.innerHTML = 'Pasar Turno'
+    document.body.appendChild(botonPasarTurno)
     inicio.style.display = "none"
 
     let imagen = new Image()
     imagen.src = "teg.jpg"
     imagen.id = "teg"
+    imagen.draggable = false
     mapa.appendChild(imagen)
     for (let pais of paises) {
         imagen = new Image()
         imagen.src = `${colores[pais.jugador]}/${pais.archivo}`
         imagen.id = pais.id
+        imagen.draggable = false
         imagen.alt = pais.nombre
         imagen.style.position = "absolute"
         imagen.style.left = pais.posX + "px"
@@ -81,7 +79,7 @@ server.on("iniciaJuego", paises => {
 
             let fichas = document.createElement("div")
             fichas.id = "f" + pais.id
-            fichas.draggable = "true"
+            fichas.draggable = true
             fichas.addEventListener("click", ponerFicha)
             fichas.addEventListener("dragover", allowDrop)
             fichas.addEventListener("dragstart", ataqueA)
@@ -95,6 +93,7 @@ server.on("iniciaJuego", paises => {
             let misiles = document.createElement("div")
             misiles.id = "m" + pais.id
             misiles.draggable = "true"
+            misiles.addEventListener("click", ponerMisil)
             misiles.addEventListener("dragover", allowDrop)
             misiles.addEventListener("dragstart", misilA)
             misiles.addEventListener("drop", enfrentaD)
@@ -109,7 +108,12 @@ server.on("iniciaJuego", paises => {
 
 server.on("ponerPais", pais => {
     document.getElementById("f" + pais.id).innerHTML = `ejercitos:${pais.ejercitos}`
-    document.getElementById("m" + pais.id).innerHTML = `misiles:${pais.ejercitos}`
+    document.getElementById("m" + pais.id).innerHTML = `misiles:${pais.misiles}`
+})
+
+server.on("jugador", jugador => {
+    document.getElementById("jugador").innerHTML = `${jugador.nombre} ${colores[jugador.id]}`
+    document.getElementById("objetivo").innerHTML = `${jugador.objetivo.nombre}`
 })
 
 function allowDrop(ev) {
@@ -137,4 +141,7 @@ function pasarTurno() {
 }
 function ponerFicha(ev) {
     server.emit('ponerFicha', ev.target.id.substr(1))
+}
+function ponerMisil(ev) {
+    server.emit('ponerMisil', ev.target.id.substr(1))
 }

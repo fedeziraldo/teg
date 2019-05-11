@@ -19,24 +19,28 @@ paisSchema.methods.limita = function (pais) {
 }
 
 paisSchema.methods.distancia = function (pais) {
+    let distancia = 0
     if (this == pais) {
-        return 0
+        return distancia
     }
+    distancia++
     if (this.limita(pais)) {
-        return 1
+        return distancia
     }
+    distancia++
     for (let lim of this.limites) {
         for (let limlim of lim.limites) {
             if (limlim == pais) {
-                return 2
+                return distancia
             }
         }
     }
+    distancia++
     for (let lim of this.limites) {
         for (let limlim of lim.limites) {
             for (let limlimlim of limlim.limites) {
                 if (limlimlim == pais) {
-                    return 3
+                    return distancia
                 }
             }
         }

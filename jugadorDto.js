@@ -1,5 +1,6 @@
 class JugadorDto {
-    constructor(nombre, objetivo) {
+    constructor(id, nombre, objetivo) {
+        this.id = id
         this.nombre = nombre
         this.cantidadCanjes = 0
         this.paisesCapturadosRonda = 0
@@ -8,9 +9,17 @@ class JugadorDto {
         this.objetivo = objetivo
     }
 
+    static get SUMA_CANJE() {
+        return 7
+    }
+
+    static get LIMITE_CANJE() {
+        return 3
+    }
+
     puedeSacarCarta() {
         return this.paisesCapturadosRonda > 1 ||
-            this.paisesCapturadosRonda > 0 && this.cantidadCanjes < 3
+            this.paisesCapturadosRonda > 0 && this.cantidadCanjes < JugadorDto.LIMITE_CANJE
     }
 
     puedeCanjear(paises, continentes) {
@@ -53,6 +62,5 @@ class JugadorDto {
         return false
     }
 }
-JugadorDto.SUMA_CANJE = 7
 
 exports.JugadorDto = JugadorDto

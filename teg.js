@@ -67,7 +67,7 @@ CartaGlobal.find((err, cartaGlobales) => {
 
 Objetivo.find((err, objetivos) => {
 	if (err) return console.error(err)
-	cargaObjetivos = objetivos
+	cargaObjetivos = desordenar(objetivos)
 })
 
 app.use(express.static(`${__dirname}/public`))
@@ -106,8 +106,8 @@ io.on('connection', cliente => {
 	cliente.on('disconnect', () => {
 		for (let nombre in clientes) {
 			if (clientes[nombre] == cliente) {
-				jugadorDtos.splice(jugadores.indexOf(cliente), 1)
-				jugadores.splice(jugadores.indexOf(cliente), 1)
+				jugadorDtos.splice(jugadores.indexOf(cliente))
+				jugadores.splice(jugadores.indexOf(cliente))
 				console.log(`${nombre} desconectado`)
 				delete clientes[nombre]
 				io.emit("saleJugador", nombre)
@@ -119,7 +119,7 @@ io.on('connection', cliente => {
 	cliente.on('inicio', () => {
 		for (let nombre in clientes) {
 			jugadores.push(clientes[nombre])
-			let jugadorDto = new JugadorDto(nombre)
+			let jugadorDto = new JugadorDto(jugadorDtos.length, nombre, cargaObjetivos.pop())
 			jugadorDtos.push(jugadorDto)
 			clientes[nombre].emit("jugador", jugadorDto)
 		}
@@ -138,6 +138,9 @@ io.on('connection', cliente => {
 			const distancia = validarAtaque(paisDtoA, paisDtoD)
 			if (distancia == 0) {
 				validarFaseRecarga()
+				if (paisDtoA.ejercitos <= MISILES) {
+					throw ("no hay suficiente para comprar misiles")
+				}
 				paisDtoA.ejercitos -= MISILES
 				paisDtoD.misiles++
 			} else if (distancia != 1) {
@@ -148,9 +151,11 @@ io.on('connection', cliente => {
 				paisDtoD.ejercitos++
 			} else {
 				validarFaseAtaque()
-				const dadosA = enfrentamiento.tirarDadosA(paisDtoA)
-				const dadosD = enfrentamiento.tirarDadosD(paisDtoD)
-				const enfrentamientos = enfrentamiento.enfrentamientos(paisDtoA, paisDtoD)
+				const ejercitosA = paisDtoA.ejercitos
+				const ejercitosD = paisDtoD.ejercitos
+				const dadosA = enfrentamiento.tirarDadosA(ejercitosA, ejercitosD)
+				const dadosD = enfrentamiento.tirarDadosD(ejercitosD)
+				const enfrentamientos = enfrentamiento.enfrentamientos(ejercitosA, ejercitosD)
 				const resultado = enfrentamiento.atacar(dadosA, dadosD, enfrentamientos)
 				paisDtoD.ejercitos -= resultado
 				paisDtoA.ejercitos -= enfrentamientos - resultado
@@ -161,11 +166,11 @@ io.on('connection', cliente => {
 					paisDtoD.jugador = paisDtoA.jugador
 				}
 			}
+			io.emit("resultado", { ataque: paisDtoA, defensa: paisDtoD })
 		} catch (e) {
 			console.log(e)
 			cliente.emit('jugadaInvalida', e)
 		}
-		io.emit("resultadoAtaque", { ataque: paisDtoA, defensa: paisDtoD })
 	})
 
 	cliente.on('misil', misil => {
@@ -193,7 +198,7 @@ io.on('connection', cliente => {
 				paisDtoA.misiles--
 				paisDtoD.ejercitos -= daño
 			}
-			io.emit("resultadoMisil", { ataque: paisDtoA, defensa: paisDtoD })
+			io.emit("resultado", { ataque: paisDtoA, defensa: paisDtoD })
 		} catch (e) {
 			console.log(e)
 			cliente.emit('jugadaInvalida', e)
@@ -209,13 +214,15 @@ io.on('connection', cliente => {
 			if (faseAtaque) {
 				faseAtaque = false
 				faseReagrupe = true
-			} else if (faseReagrupe) {
+				return
+			} 
+			if (faseReagrupe) {
 				if (jugadorDtos[turno % jugadores.length].puedeSacarCarta()) {
-					jugadorDtos[turno % jugadores.length].cartasPais.push(mazoPaisesDto.splice(1, 1))
+					jugadorDtos[turno % jugadores.length].cartasPais.push(mazoPaisesDto.splice(0))
 				}
 				jugadorDtos[turno % jugadores.length].paisesCapturadosRonda = 0
-				turno++
 			}
+			turno++
 			if (turno % jugadores.length == 0) {
 				if (fase8) {
 					fase8 = false
@@ -227,7 +234,7 @@ io.on('connection', cliente => {
 				} else if (faseReagrupe) {
 					faseReagrupe = false
 					faseRecarga = true
-					fichas = parseInt(paisDto.paisesJugador(turno % jugadores.length) / 2)
+					fichas = parseInt(paisDto.paisesJugador(paisesDto, turno % jugadores.length) / 2)
 				} else if (faseRecarga) {
 					faseRecarga = false
 					faseAtaque = true
@@ -241,7 +248,7 @@ io.on('connection', cliente => {
 					faseReagrupe = false
 					faseAtaque = true
 				} else if (faseRecarga) {
-					fichas = parseInt(paisDto.paisesJugador(turno % jugadores.length) / 2)
+					fichas = parseInt(paisDto.paisesJugador(paisesDto, turno % jugadores.length) / 2)
 				}
 			}
 		} catch (e) {
@@ -253,7 +260,7 @@ io.on('connection', cliente => {
 		const paisDto = paisesDto[idPais - 1]
 		try {
 			validarTurno(cliente, paisDto)
-			valudarFaseRecarga()
+			validarFaseRecarga()
 			if (fichas <= 0) {
 				throw ("no quedan fichas para poner")
 			}
@@ -269,7 +276,7 @@ io.on('connection', cliente => {
 		const paisDto = paisesDto[idPais - 1]
 		try {
 			validarTurno(cliente, paisDto)
-			valudarFaseRecarga()
+			validarFaseRecarga()
 			if (fichas <= MISILES) {
 				throw ("no hay suficientes fichas")
 			}
@@ -306,12 +313,6 @@ function validarMisil(paisDtoA, paisDtoD) {
 	return cargaPaises[paisDtoA.id - 1].distancia(cargaPaises[paisDtoD.id - 1])
 }
 
-function valudarFaseRecarga() {
-	if (!faseRecarga) {
-		throw ("no se puede poner fichas ahora")
-	}
-}
-
 function validarFaseAtaque() {
 	if (!faseAtaque) {
 		throw ("no se puede atacar ahora")
@@ -319,8 +320,8 @@ function validarFaseAtaque() {
 }
 
 function validarFaseRecarga() {
-	if (!faseRecarga) {
-		throw ("no se puede comprar o vender misiles ahora")
+	if (!faseRecarga && !fase8 && !fase4) {
+		throw ("no se puede poner fichas ni comprar o vender misiles ahora")
 	}
 }
 

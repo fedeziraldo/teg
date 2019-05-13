@@ -655,7 +655,7 @@ db.limites.insert([
   { pais1: 57, pais2: 59 },
 ])
 
-db.cartaGlobales.insert([
+db.cartaglobales.insert([
   { tipo: "Combate clásico", cantidad: 20 },
   { tipo: "Nieve", defensa: 1, cantidad: 4 },
   { tipo: "Viento a favor", ataque: 1, cantidad: 4 },

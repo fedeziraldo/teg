@@ -4,13 +4,14 @@ const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const bodyParser = require('body-parser')
 const enfrentamiento = require("./enfrentamiento")
-const paisDto = require("./paisDto")
+const PaisDto = require("./paisDto").PaisDto
 const JugadorDto = require("./jugadorDto").JugadorDto
-const Pais = require("./paises").Pais
-const Limite = require('./limites').Limite
-const CartaGlobal = require('./cartaGlobales').CartaGlobal
-const Continente = require('./continentes').Continente
-const Objetivo = require('./objetivos').Objetivo
+const Pais = require("./modelos/paises").Pais
+const Limite = require('./modelos/limites').Limite
+const CartaGlobal = require('./modelos/cartaGlobales').CartaGlobal
+const Continente = require('./modelos/continentes').Continente
+const Objetivo = require('./modelos/objetivos').Objetivo
+const Escudo = require('./modelos/escudos').Escudo
 
 const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
 const jugadores = []
@@ -20,6 +21,7 @@ const clientes = {}
 
 let cargaPaises
 let cargaCartaGlobales = []
+let cartaGlobal
 let cargaObjetivos = []
 const paisesDto = []
 let mazoPaisesDto
@@ -39,12 +41,11 @@ Pais.find((err, paises) => {
 	if (err) return console.error(err)
 
 	for (let pais of paises) {
-		let paisDto2 = new paisDto.PaisDto(pais)
-		paisesDto.push(paisDto2)
+		let paisDto = new PaisDto(pais)
+		paisesDto.push(paisDto)
 	}
 
-	mazoPaisesDto = copiar(paisesDto)
-	desordenar(mazoPaisesDto)
+	mazoPaisesDto = desordenar(copiar(paisesDto))
 
 	Limite.find((err, limites) => {
 		if (err) return console.error(err)
@@ -62,7 +63,10 @@ CartaGlobal.find((err, cartaGlobales) => {
 		for (let i = 0; i < cartaGlobal.cantidad; i++) {
 			cargaCartaGlobales.push(cartaGlobal)
 		}
+		if (!cartaGlobal.ataque) cartaGlobal.ataque = 0
+		if (!cartaGlobal.defensa) cartaGlobal.defensa = 0
 	}
+	desordenar(cargaCartaGlobales)
 })
 
 Objetivo.find((err, objetivos) => {
@@ -106,8 +110,8 @@ io.on('connection', cliente => {
 	cliente.on('disconnect', () => {
 		for (let nombre in clientes) {
 			if (clientes[nombre] == cliente) {
-				jugadorDtos.splice(jugadores.indexOf(cliente))
-				jugadores.splice(jugadores.indexOf(cliente))
+				jugadorDtos.splice(jugadores.indexOf(cliente), 1)
+				jugadores.splice(jugadores.indexOf(cliente), 1)
 				console.log(`${nombre} desconectado`)
 				delete clientes[nombre]
 				io.emit("saleJugador", nombre)
@@ -117,14 +121,15 @@ io.on('connection', cliente => {
 	})
 
 	cliente.on('inicio', () => {
+		desordenar(colores)
 		for (let nombre in clientes) {
 			jugadores.push(clientes[nombre])
-			let jugadorDto = new JugadorDto(jugadorDtos.length, nombre, cargaObjetivos.pop())
+			let jugadorDto = new JugadorDto(colores[jugadorDtos.length], nombre, cargaObjetivos.pop())
 			jugadorDtos.push(jugadorDto)
 			clientes[nombre].emit("jugador", jugadorDto)
 		}
 		for (let i = 0; i < mazoPaisesDto.length; i++) {
-			mazoPaisesDto[i].jugador = i % jugadores.length
+			mazoPaisesDto[i].jugador = colores[i % jugadores.length]
 		}
 		io.emit("iniciaJuego", paisesDto)
 		desordenar(mazoPaisesDto)
@@ -137,7 +142,7 @@ io.on('connection', cliente => {
 			validarTurno(cliente, paisDtoA)
 			const distancia = validarAtaque(paisDtoA, paisDtoD)
 			if (distancia == 0) {
-				validarFaseRecarga()
+				validarFaseRecargaMisiles()
 				if (paisDtoA.ejercitos <= MISILES) {
 					throw ("no hay suficiente para comprar misiles")
 				}
@@ -151,16 +156,22 @@ io.on('connection', cliente => {
 				paisDtoD.ejercitos++
 			} else {
 				validarFaseAtaque()
+				if (cartaGlobal.fronteraAbierta && paisDtoA.continente == paisDtoA.continente) {
+					throw ("en fronteras abiertas hay que atacar fuera del continente")
+				}
+				if (cartaGlobal.fronteraCerrada && paisDtoA.continente != paisDtoA.continente) {
+					throw ("en fronteras cerradas hay que atacar dentro del continente")
+				}
 				const ejercitosA = paisDtoA.ejercitos
 				const ejercitosD = paisDtoD.ejercitos
-				const dadosA = enfrentamiento.tirarDadosA(ejercitosA, ejercitosD)
-				const dadosD = enfrentamiento.tirarDadosD(ejercitosD)
+				const dadosA = enfrentamiento.tirarDadosA(ejercitosA, ejercitosD, cartaGlobal.ataque)
+				const dadosD = enfrentamiento.tirarDadosD(ejercitosD, cartaGlobal.defensa)
 				const enfrentamientos = enfrentamiento.enfrentamientos(ejercitosA, ejercitosD)
 				const resultado = enfrentamiento.atacar(dadosA, dadosD, enfrentamientos)
 				paisDtoD.ejercitos -= resultado
 				paisDtoA.ejercitos -= enfrentamientos - resultado
 				if (paisDtoD.ejercitos < 1) {
-					jugadorDtos[paisDtoA.jugador].paisesCapturadosRonda++
+					jugadorDtos[colores.indexOf(paisDtoA.jugador)].paisesCapturadosRonda++
 					paisDtoA.ejercitos--
 					paisDtoD.ejercitos++
 					paisDtoD.jugador = paisDtoA.jugador
@@ -180,7 +191,7 @@ io.on('connection', cliente => {
 			validarTurno(cliente, paisDtoA)
 			const distancia = validarMisil(paisDtoA, paisDtoD)
 			if (distancia == 0) {
-				validarFaseRecarga()
+				validarFaseRecargaMisiles()
 				paisDtoD.ejercitos += MISILES
 				paisDtoA.misiles--
 			} else if (distancia != 1 && paisDtoA.jugador == paisDtoD.jugador) {
@@ -194,6 +205,9 @@ io.on('connection', cliente => {
 				const daño = 4 - distancia
 				if (paisDtoD.ejercitos <= daño) {
 					throw ("no se puede matar un pais")
+				}
+				if (paisDtoA.misiles <= paisDtoD.misiles) {
+					throw ("no se puede tirar misil con menos paises que el otro ")
 				}
 				paisDtoA.misiles--
 				paisDtoD.ejercitos -= daño
@@ -215,10 +229,11 @@ io.on('connection', cliente => {
 				faseAtaque = false
 				faseReagrupe = true
 				return
-			} 
+			}
 			if (faseReagrupe) {
 				if (jugadorDtos[turno % jugadores.length].puedeSacarCarta()) {
-					jugadorDtos[turno % jugadores.length].cartasPais.push(mazoPaisesDto.splice(0))
+					jugadorDtos[turno % jugadores.length].cartasPais.push(mazoPaisesDto.splice(0, 1))
+					cliente.emit("cartaPais", jugadorDtos[turno % jugadores.length])
 				}
 				jugadorDtos[turno % jugadores.length].paisesCapturadosRonda = 0
 			}
@@ -231,14 +246,17 @@ io.on('connection', cliente => {
 				} else if (fase4) {
 					fase4 = false
 					faseAtaque = true
+					cartaGlobal = cargaCartaGlobales.pop()
+					io.emit("cartaGlobal", cartaGlobal)
 				} else if (faseReagrupe) {
 					faseReagrupe = false
 					faseRecarga = true
-					fichas = parseInt(paisDto.paisesJugador(paisesDto, turno % jugadores.length) / 2)
+					fichas = parseInt(jugadorDtos[turno % jugadores.length].paisesJugador(paisesDto).length / 2)
 				} else if (faseRecarga) {
 					faseRecarga = false
 					faseAtaque = true
-					io.emit("cartaGlobal", cargaCartaGlobales.pop())
+					cartaGlobal = cargaCartaGlobales.pop()
+					io.emit("cartaGlobal", cartaGlobal)
 				}
 			} else {
 				if (fase8) {
@@ -249,7 +267,7 @@ io.on('connection', cliente => {
 					faseReagrupe = false
 					faseAtaque = true
 				} else if (faseRecarga) {
-					fichas = parseInt(paisDto.paisesJugador(paisesDto, turno % jugadores.length) / 2)
+					fichas = parseInt(jugadorDtos[turno % jugadores.length].paisesJugador(paisesDto).length / 2)
 				}
 			}
 		} catch (e) {
@@ -277,7 +295,7 @@ io.on('connection', cliente => {
 		const paisDto = paisesDto[idPais - 1]
 		try {
 			validarTurno(cliente, paisDto)
-			validarFaseRecarga()
+			validarFaseRecargaMisiles()
 			if (fichas <= MISILES) {
 				throw ("no hay suficientes fichas")
 			}
@@ -295,7 +313,7 @@ function validarTurno(cliente, paisDto) {
 	if (jugadores[turno % jugadores.length] != cliente) {
 		throw ('no es tu turno')
 	}
-	if (paisDto && turno % jugadores.length != paisDto.jugador) {
+	if (paisDto && turno % jugadores.length != colores.indexOf(paisDto.jugador)) {
 		throw ('no es tu pais')
 	}
 }
@@ -320,9 +338,15 @@ function validarFaseAtaque() {
 	}
 }
 
-function validarFaseRecarga() {
-	if (!faseRecarga && !fase8 && !fase4) {
+function validarFaseRecargaMisiles() {
+	if (!faseRecarga) {
 		throw ("no se puede poner fichas ni comprar o vender misiles ahora")
+	}
+}
+
+function validarFaseRecarga() {
+	if (!(faseRecarga || fase8 || fase4)) {
+		throw ("no se puede poner fichas ahora")
 	}
 }
 

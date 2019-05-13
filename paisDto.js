@@ -11,15 +11,4 @@ class PaisDto {
     }
 }
 
-function paisesJugador(paisesDto, jugador){
-    paises = 0
-    for (let paisDto of paisesDto) {
-        if (paisDto.jugador == jugador) {
-            paises++
-        }
-    }
-    return paises
-}
-
 exports.PaisDto = PaisDto
-exports.paisesJugador = paisesJugador

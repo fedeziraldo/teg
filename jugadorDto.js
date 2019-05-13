@@ -1,6 +1,6 @@
 class JugadorDto {
-    constructor(id, nombre, objetivo) {
-        this.id = id
+    constructor(color, nombre, objetivo) {
+        this.color = color
         this.nombre = nombre
         this.cantidadCanjes = 0
         this.paisesCapturadosRonda = 0
@@ -60,6 +60,16 @@ class JugadorDto {
             }
         }
         return false
+    }
+
+    paisesJugador(paisesDto){
+        paises = []
+        for (let paisDto of paisesDto) {
+            if (paisDto.jugador == this.color) {
+                paises.push(paisDto)
+            }
+        }
+        return paises
     }
 }
 

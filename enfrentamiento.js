@@ -15,12 +15,12 @@ function enfrentamientos(ejercitosA, ejercitosD) {
     return Math.min(ejercitosA - 1, ejercitosD, MAXIMO_NORMAL)
 }
 
-function tirarDadosA(ejercitosA, ejercitosD) {
-    return tirarDados(Math.min(ejercitosA - 1, MAXIMO_NORMAL + duplica(ejercitosA, ejercitosD)))
+function tirarDadosA(ejercitosA, ejercitosD, ataque) {
+    return tirarDados(Math.min(ejercitosA - 1, MAXIMO_NORMAL + duplica(ejercitosA, ejercitosD) + ataque, MAXIMO_NORMAL + 1))
 }
 
-function tirarDadosD(ejercitos) {
-    return tirarDados(Math.min(ejercitos, MAXIMO_NORMAL))
+function tirarDadosD(ejercitos, defensa) {
+    return tirarDados(Math.min(ejercitos, MAXIMO_NORMAL + defensa))
 }
 
 function tirarDados(cantidad) {

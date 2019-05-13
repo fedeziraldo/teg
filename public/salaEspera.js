@@ -1,7 +1,5 @@
 const server = io()
 
-const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
-
 let escala = .5
 
 const inicio = document.getElementById("inicio")
@@ -38,7 +36,7 @@ server.on("saleJugador", nombre => {
 
 server.on("resultado", resultado => {
     let imagen = document.getElementById(resultado.defensa.id)
-    imagen.src = `${colores[resultado.defensa.jugador]}/${resultado.defensa.archivo}`
+    imagen.src = `${resultado.defensa.jugador}/${resultado.defensa.archivo}`
     document.getElementById("f" + resultado.ataque.id).innerHTML = `ejercitos:${resultado.ataque.ejercitos}`
     document.getElementById("m" + resultado.ataque.id).innerHTML = `misiles:${resultado.ataque.misiles}`
     document.getElementById("f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
@@ -51,7 +49,7 @@ server.on("jugadaInvalida", resultado => {
 })
 
 server.on("iniciaJuego", paises => {
-    const mapa = document.getElementById("mapa")
+    const mapa = document.getElementById("teg")
     const botonPasarTurno = document.createElement('button')
     botonPasarTurno.addEventListener('click', pasarTurno)
     botonPasarTurno.innerHTML = 'Pasar Turno'
@@ -60,12 +58,11 @@ server.on("iniciaJuego", paises => {
 
     let imagen = new Image()
     imagen.src = "teg.jpg"
-    imagen.id = "teg"
     imagen.draggable = false
     mapa.appendChild(imagen)
     for (let pais of paises) {
         imagen = new Image()
-        imagen.src = `${colores[pais.jugador]}/${pais.archivo}`
+        imagen.src = `${pais.jugador}/${pais.archivo}`
         imagen.id = pais.id
         imagen.draggable = false
         imagen.alt = pais.nombre
@@ -114,7 +111,7 @@ server.on("ponerPais", pais => {
 })
 
 server.on("jugador", jugador => {
-    document.getElementById("jugador").innerHTML = `${jugador.nombre} ${colores[jugador.id]}`
+    document.getElementById("jugador").innerHTML = `${jugador.nombre} ${jugador.color}`
     document.getElementById("objetivo").innerHTML = `${jugador.objetivo.nombre}`
 })
 

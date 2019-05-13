@@ -12,6 +12,6 @@ const cartaGlobalSchema = new mongoose.Schema({
     color: String
 })
 
-const CartaGlobal = mongoose.model('cartaGlobales', cartaGlobalSchema)
+const CartaGlobal = mongoose.model('cartaglobales', cartaGlobalSchema)
 
 exports.CartaGlobal = CartaGlobal

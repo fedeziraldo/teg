@@ -53,7 +53,7 @@ class JugadorDto {
             for (let valor1 in cartas[1].escudo.valor) {
                 for (let valor2 in cartas[2].escudo.valor) {
                     if (valor0 + valor1 + valor2 == JugadorDto.SUMA_CANJE ||
-                        valor0 == valor1 && valor1 == valor2 ) {
+                        valor0 == valor1 && valor1 == valor2) {
                         return true
                     }
                 }
@@ -62,14 +62,23 @@ class JugadorDto {
         return false
     }
 
-    paisesJugador(paisesDto){
-        paises = []
+    paisesJugador(paisesDto) {
+        const paises = []
         for (let paisDto of paisesDto) {
             if (paisDto.jugador == this.color) {
                 paises.push(paisDto)
             }
         }
         return paises
+    }
+
+    conquistaContinente(paisesDto, continente) {
+        for (let paisDto of paisesDto) {
+            if (paisDto.continente == continente && paisDto.jugador != this.color) {
+                return false
+            }
+        }
+        return true
     }
 }
 

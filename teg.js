@@ -16,8 +16,8 @@ const Escudo = require('./modelos/escudos').Escudo
 const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
 const jugadores = []
 const jugadorDtos = []
-let turno = 0
 const clientes = {}
+let turno = 0
 
 let cargaPaises
 let cargaCartaGlobales = []
@@ -25,6 +25,7 @@ let cartaGlobal
 let cargaObjetivos = []
 const paisesDto = []
 let mazoPaisesDto
+let mazoContinentes
 
 const FASE8 = 8
 const FASE4 = 4
@@ -40,13 +41,6 @@ let fichas = FASE8
 Pais.find((err, paises) => {
 	if (err) return console.error(err)
 
-	for (let pais of paises) {
-		let paisDto = new PaisDto(pais)
-		paisesDto.push(paisDto)
-	}
-
-	mazoPaisesDto = desordenar(copiar(paisesDto))
-
 	Limite.find((err, limites) => {
 		if (err) return console.error(err)
 		for (let limite of limites) {
@@ -54,6 +48,24 @@ Pais.find((err, paises) => {
 			paises[limite.pais2 - 1].limites.push(paises[limite.pais1 - 1])
 		}
 		cargaPaises = paises
+	})
+
+	Escudo.find((err, escudos) => {
+		if (err) return console.error(err)
+		for (let pais of paises) {
+			pais.escudo = escudos[pais.escudo - 1]
+			let paisDto = new PaisDto(pais)
+			paisesDto.push(paisDto)
+		}
+		mazoPaisesDto = desordenar(copiar(paisesDto))
+	
+		Continente.find((err, continentes) => {
+			if (err) return console.error(err)
+			for (let continente of continentes) {
+				continente.escudo = escudos[continente.escudo - 1]
+			}
+			mazoContinentes = continentes
+		})
 	})
 })
 

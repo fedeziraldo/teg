@@ -6,6 +6,8 @@ const paisSchema = new mongoose.Schema({
     archivo: String,
     posX: Number,
     posY: Number,
+    continente: Number,
+    escudo: String,
     limites: Array
 })
 

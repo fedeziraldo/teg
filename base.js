@@ -7,6 +7,8 @@ db.paises.insert([
     archivo: 'ALASKA.png',
     posX: 27,
     posY: 49,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 2,
@@ -14,6 +16,8 @@ db.paises.insert([
     archivo: 'ALBANIA.png',
     posX: 1046,
     posY: 428,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 3,
@@ -21,6 +25,8 @@ db.paises.insert([
     archivo: 'ALEMANIA.png',
     posX: 836,
     posY: 339,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 4,
@@ -28,6 +34,8 @@ db.paises.insert([
     archivo: 'ANGOLA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 5,
@@ -35,6 +43,8 @@ db.paises.insert([
     archivo: 'ARABIA.png',
     posX: 1129,
     posY: 628,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 6,
@@ -42,6 +52,8 @@ db.paises.insert([
     archivo: 'ARGENTINA.png',
     posX: 293,
     posY: 954,
+    continente: 1,
+    escudo: "Avion",
   },
 
   {
@@ -50,6 +62,8 @@ db.paises.insert([
     archivo: 'AUSTRALIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 8,
@@ -57,6 +71,8 @@ db.paises.insert([
     archivo: 'BIELORRUSIA.png',
     posX: 981,
     posY: 152,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 9,
@@ -64,6 +80,8 @@ db.paises.insert([
     archivo: 'BOLIVIA.png',
     posX: 260,
     posY: 866,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 10,
@@ -71,6 +89,8 @@ db.paises.insert([
     archivo: 'BRASIL.png',
     posX: 252,
     posY: 789,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 11,
@@ -78,6 +98,8 @@ db.paises.insert([
     archivo: 'CALIFORNIA.png',
     posX: 58,
     posY: 398,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 12,
@@ -85,6 +107,8 @@ db.paises.insert([
     archivo: 'CANADA.png',
     posX: 67,
     posY: 114,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 13,
@@ -92,6 +116,8 @@ db.paises.insert([
     archivo: 'COLOMBIA.png',
     posX: 176,
     posY: 691,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 14,
@@ -99,6 +125,8 @@ db.paises.insert([
     archivo: 'COREA.png',
     posX: 1326,
     posY: 327,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 15,
@@ -106,6 +134,8 @@ db.paises.insert([
     archivo: 'CROACIA.png',
     posX: 916,
     posY: 490,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 16,
@@ -113,6 +143,8 @@ db.paises.insert([
     archivo: 'CUBA.png',
     posX: 321,
     posY: 480,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 17,
@@ -120,6 +152,8 @@ db.paises.insert([
     archivo: 'CHECHENIA.png',
     posX: 1168,
     posY: 136,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 18,
@@ -127,6 +161,8 @@ db.paises.insert([
     archivo: 'CHICAGO.png',
     posX: 260,
     posY: 277,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 19,
@@ -134,6 +170,8 @@ db.paises.insert([
     archivo: 'CHILE.png',
     posX: 208,
     posY: 818,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 20,
@@ -141,12 +179,16 @@ db.paises.insert([
     archivo: 'CHINA.png',
     posX: 1231,
     posY: 29,
+    continente: 1,
+    escudo: "Avion",
   }, {
     id: 21,
     nombre: 'Chukchi',
     archivo: 'CHUKCHI.png',
     posX: 1294,
     posY: 54,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 22,
@@ -154,6 +196,8 @@ db.paises.insert([
     archivo: 'IRLANDA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 23,
@@ -161,6 +205,8 @@ db.paises.insert([
     archivo: 'ETIOPIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 24,
@@ -168,6 +214,8 @@ db.paises.insert([
     archivo: 'EGIPTO.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 25,
@@ -175,6 +223,8 @@ db.paises.insert([
     archivo: 'ELSALVADOR.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 26,
@@ -182,6 +232,8 @@ db.paises.insert([
     archivo: 'ESPAÑA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 27,
@@ -189,6 +241,8 @@ db.paises.insert([
     archivo: 'FILIPINAS.png',
     posX: 1340,
     posY: 750,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 28,
@@ -196,6 +250,8 @@ db.paises.insert([
     archivo: 'FINLANDIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 29,
@@ -203,6 +259,8 @@ db.paises.insert([
     archivo: 'FRANCIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 30,
@@ -210,6 +268,8 @@ db.paises.insert([
     archivo: 'GRANBRETAÑA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 31,
@@ -217,6 +277,8 @@ db.paises.insert([
     archivo: 'GREONLANDIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 32,
@@ -224,6 +286,8 @@ db.paises.insert([
     archivo: 'HONDURAS.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 33,
@@ -231,6 +295,8 @@ db.paises.insert([
     archivo: 'INDIA.png',
     posX: 1258,
     posY: 552,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 34,
@@ -238,6 +304,8 @@ db.paises.insert([
     archivo: 'IRAK.png',
     posX: 1057,
     posY: 444,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 35,
@@ -245,6 +313,8 @@ db.paises.insert([
     archivo: 'IRAN.png',
     posX: 1107,
     posY: 363,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 36,
@@ -252,6 +322,8 @@ db.paises.insert([
     archivo: 'ISLANDIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 37,
@@ -259,6 +331,8 @@ db.paises.insert([
     archivo: 'ISLAVICTORIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 38,
@@ -266,6 +340,8 @@ db.paises.insert([
     archivo: 'ISRAEL.png',
     posX: 1089,
     posY: 529,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 39,
@@ -273,6 +349,8 @@ db.paises.insert([
     archivo: 'ITALIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 40,
@@ -280,6 +358,8 @@ db.paises.insert([
     archivo: 'JAMAICA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 41,
@@ -287,6 +367,8 @@ db.paises.insert([
     archivo: 'JAPON.png',
     posX: 1456,
     posY: 256,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 42,
@@ -294,6 +376,8 @@ db.paises.insert([
     archivo: 'KAMCHATKA.png',
     posX: 1306,
     posY: 106,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 43,
@@ -301,6 +385,8 @@ db.paises.insert([
     archivo: 'FLORIDA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 44,
@@ -308,6 +394,8 @@ db.paises.insert([
     archivo: 'LABRADOR.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 45,
@@ -315,6 +403,8 @@ db.paises.insert([
     archivo: 'LASVEGAS.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 46,
@@ -322,6 +412,8 @@ db.paises.insert([
     archivo: 'MADAGASCAR.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 47,
@@ -329,6 +421,8 @@ db.paises.insert([
     archivo: 'MALASIA.png',
     posX: 1272,
     posY: 455,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 48,
@@ -336,6 +430,8 @@ db.paises.insert([
     archivo: 'MAURITANIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 49,
@@ -343,6 +439,8 @@ db.paises.insert([
     archivo: 'MEXICO.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 50,
@@ -350,6 +448,8 @@ db.paises.insert([
     archivo: 'NICARAGUA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 51,
@@ -357,6 +457,8 @@ db.paises.insert([
     archivo: 'NIGERIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 52,
@@ -364,6 +466,8 @@ db.paises.insert([
     archivo: 'NORUEGA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 53,
@@ -371,6 +475,8 @@ db.paises.insert([
     archivo: 'NUEVAYORK.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 54,
@@ -378,6 +484,8 @@ db.paises.insert([
     archivo: 'NUEVA_ZELANDIA.png',
     posX: 1233,
     posY: 1074,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 55,
@@ -385,6 +493,8 @@ db.paises.insert([
     archivo: 'OREGON.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 56,
@@ -392,6 +502,8 @@ db.paises.insert([
     archivo: 'PARAGUAY.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 57,
@@ -399,6 +511,8 @@ db.paises.insert([
     archivo: 'UCRANIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 58,
@@ -406,6 +520,8 @@ db.paises.insert([
     archivo: 'PORTUGAL.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 59,
@@ -413,6 +529,8 @@ db.paises.insert([
     archivo: 'RUSIA.png',
     posX: 1092,
     posY: 41,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 60,
@@ -420,6 +538,8 @@ db.paises.insert([
     archivo: 'SAHARA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 61,
@@ -427,6 +547,8 @@ db.paises.insert([
     archivo: 'SERBIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 62,
@@ -434,6 +556,8 @@ db.paises.insert([
     archivo: 'SIBERIA.png',
     posX: 1162,
     posY: 32,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 63,
@@ -441,6 +565,8 @@ db.paises.insert([
     archivo: 'SUDAFRICA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 64,
@@ -448,6 +574,8 @@ db.paises.insert([
     archivo: 'SUMATRA.png',
     posX: 1212,
     posY: 770,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 65,
@@ -455,6 +583,8 @@ db.paises.insert([
     archivo: 'TASMANIA.png',
     posX: 1343,
     posY: 1037,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 66,
@@ -462,6 +592,8 @@ db.paises.insert([
     archivo: 'TERRANOVA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 67,
@@ -469,6 +601,8 @@ db.paises.insert([
     archivo: 'TONGA.png',
     posX: 1486,
     posY: 799,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 68,
@@ -476,6 +610,8 @@ db.paises.insert([
     archivo: 'TURQUIA.png',
     posX: 1165,
     posY: 468,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 69,
@@ -483,6 +619,8 @@ db.paises.insert([
     archivo: 'POLONIA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 70,
@@ -490,6 +628,8 @@ db.paises.insert([
     archivo: 'URUGUAY.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 71,
@@ -497,6 +637,8 @@ db.paises.insert([
     archivo: 'VENEZUELA.png',
     posX: 1224,
     posY: 837,
+    continente: 1,
+    escudo: "Avion",
   },
   {
     id: 72,
@@ -504,6 +646,8 @@ db.paises.insert([
     archivo: 'VIETNAM.png',
     posX: 1342,
     posY: 529,
+    continente: 1,
+    escudo: "Avion",
   }
 ])
 

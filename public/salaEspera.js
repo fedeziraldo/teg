@@ -1,7 +1,5 @@
 const server = io()
 
-let escala = .5
-
 const inicio = document.getElementById("inicio")
 inicio.addEventListener("click", iniciar)
 
@@ -83,8 +81,7 @@ server.on("iniciaJuego", paises => {
             fichas.addEventListener("dragover", allowDrop)
             fichas.addEventListener("dragstart", ataqueA)
             fichas.addEventListener("drop", enfrentaD)
-            fichas.style.position = "absolute"
-            fichas.style.left = pais.posX + ev.target.width * .2 + "px"
+            fichas.style.left = pais.posX + ev.target.width * .3 + "px"
             fichas.style.top = pais.posY + ev.target.height * .4 + "px"
             fichas.innerHTML = `ejercitos:${pais.ejercitos}`
             mapa.appendChild(fichas)
@@ -96,9 +93,8 @@ server.on("iniciaJuego", paises => {
             misiles.addEventListener("dragover", allowDrop)
             misiles.addEventListener("dragstart", misilA)
             misiles.addEventListener("drop", enfrentaD)
-            misiles.style.position = "absolute"
-            misiles.style.left = pais.posX + ev.target.width * .2 + "px"
-            misiles.style.top = pais.posY + ev.target.height * .6 + "px"
+            misiles.style.left = fichas.style.left
+            misiles.style.top = pais.posY + ev.target.height * .4 + 15 + "px"
             misiles.innerHTML = `misiles:${pais.misiles}`;
             mapa.appendChild(misiles)
         })
@@ -110,13 +106,28 @@ server.on("ponerPais", pais => {
     document.getElementById("m" + pais.id).innerHTML = `misiles:${pais.misiles}`
 })
 
-server.on("jugador", jugador => {
-    document.getElementById("jugador").innerHTML = `${jugador.nombre} ${jugador.color}`
-    document.getElementById("objetivo").innerHTML = `${jugador.objetivo.nombre}`
+server.on("jugadores", jugadores => {
+    let ul = document.getElementById("jugadores")
+    ul.innerHTML = ""
+    for (let jugador of jugadores) {
+        ul.innerHTML += `<li>${jugador.nombre} (${jugador.color})</li>`
+    }
+})
+
+server.on("objetivo", objetivo => {
+    document.getElementById("objetivo").innerHTML = `${objetivo.nombre}`
 })
 
 server.on("cartaGlobal", cartaGlobal => {
     document.getElementById("cartaGlobal").innerHTML = cartaGlobal.tipo
+})
+
+server.on("dadosA", dadosA => {
+    document.getElementById("dadosA").innerHTML = dadosA
+})
+
+server.on("dadosD", dadosD => {
+    document.getElementById("dadosD").innerHTML = dadosD
 })
 
 function allowDrop(ev) {

@@ -136,9 +136,12 @@ io.on('connection', cliente => {
 		desordenar(colores)
 		for (let nombre in clientes) {
 			jugadores.push(clientes[nombre])
-			let jugadorDto = new JugadorDto(colores[jugadorDtos.length], nombre, cargaObjetivos.pop())
-			jugadorDtos.push(jugadorDto)
-			clientes[nombre].emit("jugador", jugadorDto)
+			jugadorDtos.push(new JugadorDto(colores[jugadorDtos.length], nombre))
+		}
+		io.emit("jugadores", jugadorDtos)
+		for (let i = 0; i < jugadorDtos.length; i++) {
+			jugadorDtos[i].objetivo = cargaObjetivos.pop()
+			jugadores[i].emit("objetivo", jugadorDtos[i].objetivo)
 		}
 		for (let i = 0; i < mazoPaisesDto.length; i++) {
 			mazoPaisesDto[i].jugador = colores[i % jugadores.length]
@@ -177,7 +180,9 @@ io.on('connection', cliente => {
 				const ejercitosA = paisDtoA.ejercitos
 				const ejercitosD = paisDtoD.ejercitos
 				const dadosA = enfrentamiento.tirarDadosA(ejercitosA, ejercitosD, cartaGlobal.ataque)
+				io.emit("dadosA", dadosA)
 				const dadosD = enfrentamiento.tirarDadosD(ejercitosD, cartaGlobal.defensa)
+				io.emit("dadosD", dadosD)
 				const enfrentamientos = enfrentamiento.enfrentamientos(ejercitosA, ejercitosD)
 				const resultado = enfrentamiento.atacar(dadosA, dadosD, enfrentamientos)
 				paisDtoD.ejercitos -= resultado
@@ -221,6 +226,7 @@ io.on('connection', cliente => {
 				if (paisDtoA.misiles <= paisDtoD.misiles) {
 					throw ("no se puede tirar misil con menos paises que el otro ")
 				}
+				io.emit("dadosA", "lanza un misil")
 				paisDtoA.misiles--
 				paisDtoD.ejercitos -= daño
 			}
@@ -244,8 +250,13 @@ io.on('connection', cliente => {
 			}
 			if (faseReagrupe) {
 				if (jugadorDtos[turno % jugadores.length].puedeSacarCarta()) {
-					jugadorDtos[turno % jugadores.length].cartasPais.push(mazoPaisesDto.splice(0, 1))
+					const carta = mazoPaisesDto.splice(0, 1)
+					jugadorDtos[turno % jugadores.length].cartasPais.push(carta)
 					cliente.emit("cartaPais", jugadorDtos[turno % jugadores.length])
+					if (carta.jugador = jugador.color) {
+						carta.ejercitos+=3
+						io.emit("ponerPais", carta)
+					}
 				}
 				jugadorDtos[turno % jugadores.length].paisesCapturadosRonda = 0
 			}

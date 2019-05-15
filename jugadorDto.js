@@ -23,7 +23,8 @@ class JugadorDto {
     }
 
     puedeCanjear(paises, continentes) {
-        const cartas = paises
+        const cartas = []
+        cartas.push(...paises)
         cartas.push(...continentes)
         if (cartas.length > 3) {
             throw ("demasiadas cartas")
@@ -67,6 +68,16 @@ class JugadorDto {
         for (let paisDto of paisesDto) {
             if (paisDto.jugador == this.color) {
                 paises.push(paisDto)
+            }
+        }
+        return paises
+    }
+
+    paisesContinente(paisesDto, continente) {
+        let paises = 0
+        for (let paisDto of this.paisesJugador(paisesDto)) {
+            if (paisDto.continente == continente) {
+                paises++
             }
         }
         return paises

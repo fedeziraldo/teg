@@ -14,6 +14,8 @@ ul{
 [id^='f'], [id^='m']{
     background-color: whitesmoke;
     font-weight: bold;
+    font-size: 12px;
+    position: absolute;
 }
 .bienvenida{
     color:blue;

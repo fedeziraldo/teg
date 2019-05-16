@@ -14,22 +14,25 @@ const Objetivo = require('./modelos/objetivos').Objetivo
 const Escudo = require('./modelos/escudos').Escudo
 
 const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
-const jugadores = []
-const jugadorDtos = []
-const clientes = {}
-let turno = 0
 
 let cargaPaises
-let cargaCartaGlobales = []
-let cartaGlobal
-let cargaObjetivos = []
+const jugadores = []
+const jugadorDtos = []
 const paisesDto = []
-let mazoPaisesDto
+const clientes = {}
+
+let turno = 0
+let cartaGlobal
+
+const mazoPaisesDto = []
+const mazoCartaGlobales = []
 let mazoContinentes
+let mazoObjetivos = []
 
 const FASE8 = 8
 const FASE4 = 4
 const MISILES = 6
+
 let fase8 = true
 let fase4 = false
 let faseAtaque = false
@@ -54,10 +57,10 @@ Pais.find((err, paises) => {
 		if (err) return console.error(err)
 		for (let pais of paises) {
 			pais.escudo = escudos[pais.escudo - 1]
-			let paisDto = new PaisDto(pais)
-			paisesDto.push(paisDto)
+			paisesDto.push(new PaisDto(pais))
 		}
-		mazoPaisesDto = desordenar(copiar(paisesDto))
+		mazoPaisesDto.push(...paisesDto)
+		desordenar(mazoPaisesDto)
 	
 		Continente.find((err, continentes) => {
 			if (err) return console.error(err)
@@ -73,17 +76,17 @@ CartaGlobal.find((err, cartaGlobales) => {
 	if (err) return console.error(err)
 	for (let cartaGlobal of cartaGlobales) {
 		for (let i = 0; i < cartaGlobal.cantidad; i++) {
-			cargaCartaGlobales.push(cartaGlobal)
+			mazoCartaGlobales.push(cartaGlobal)
 		}
 		if (!cartaGlobal.ataque) cartaGlobal.ataque = 0
 		if (!cartaGlobal.defensa) cartaGlobal.defensa = 0
 	}
-	desordenar(cargaCartaGlobales)
+	desordenar(mazoCartaGlobales)
 })
 
 Objetivo.find((err, objetivos) => {
 	if (err) return console.error(err)
-	cargaObjetivos = desordenar(objetivos)
+	mazoObjetivos = desordenar(objetivos)
 })
 
 app.use(express.static(`${__dirname}/public`))
@@ -140,7 +143,7 @@ io.on('connection', cliente => {
 		}
 		io.emit("jugadores", jugadorDtos)
 		for (let i = 0; i < jugadorDtos.length; i++) {
-			jugadorDtos[i].objetivo = cargaObjetivos.pop()
+			jugadorDtos[i].objetivo = mazoObjetivos.pop()
 			jugadores[i].emit("objetivo", jugadorDtos[i].objetivo)
 		}
 		for (let i = 0; i < mazoPaisesDto.length; i++) {
@@ -269,7 +272,7 @@ io.on('connection', cliente => {
 				} else if (fase4) {
 					fase4 = false
 					faseAtaque = true
-					cartaGlobal = cargaCartaGlobales.pop()
+					cartaGlobal = mazoCartaGlobales.pop()
 					io.emit("cartaGlobal", cartaGlobal)
 				} else if (faseReagrupe) {
 					faseReagrupe = false
@@ -278,7 +281,7 @@ io.on('connection', cliente => {
 				} else if (faseRecarga) {
 					faseRecarga = false
 					faseAtaque = true
-					cartaGlobal = cargaCartaGlobales.pop()
+					cartaGlobal = mazoCartaGlobales.pop()
 					io.emit("cartaGlobal", cartaGlobal)
 				}
 			} else {
@@ -306,6 +309,7 @@ io.on('connection', cliente => {
 			if (fichas <= 0) {
 				throw ("no quedan fichas para poner")
 			}
+			validarBloqueo(paisDto)
 			paisDto.ejercitos++
 			fichas--
 			io.emit("ponerPais", paisDto)
@@ -322,6 +326,7 @@ io.on('connection', cliente => {
 			if (fichas <= MISILES) {
 				throw ("no hay suficientes fichas")
 			}
+			validarBloqueo(paisDto)
 			paisDto.misiles++
 			fichas -= MISILES
 			io.emit("ponerPais", paisDto)
@@ -379,12 +384,14 @@ function validarFaseReagrupe() {
 	}
 }
 
-function copiar(vector) {
-	aux = []
-	for (let elem of vector) {
-		aux.push(elem)
+function validarBloqueo(paisDto) {
+	const limites = paises[paisDto.id - 1].limites
+	for (let i = 0; i < limites.length; i++) {
+		limites[i] = paisesDto[limites[i].id - 1]
 	}
-	return aux
+	if (paisDto.bloqueado(limites)) {
+		throw ("el pais esta bloqueado")
+	}
 }
 
 function desordenar(vector) {

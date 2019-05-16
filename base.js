@@ -877,7 +877,7 @@ db.objetivos.insert([
   },
   {
     id: 2,
-    nombre: "Ocupar America del Norte y Oceania",
+    nombre: "Ocupar America del Norte y Oceania y 5 de Africa",
   },
   {
     id: 3,
@@ -889,6 +889,62 @@ db.objetivos.insert([
   },
   {
     id: 5,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 6,
+    nombre: "Ocupar Oceania, 6 de Asia, 6 de Africa y 6 de America del norte",
+  },
+  {
+    id: 7,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 8,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 9,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 10,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 11,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 12,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 13,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 14,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 15,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 16,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 17,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 18,
+    nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
+  },
+  {
+    id: 19,
     nombre: "Ocupar 4 de America del Norte, 4 de Europa, 4 de Asia, 3 de Africa, 3 de America del Sur, 3 de America Central y 3 de Oceania",
   }
 ])

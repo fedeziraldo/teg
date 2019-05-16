@@ -12,39 +12,22 @@ const paisSchema = new mongoose.Schema({
 })
 
 paisSchema.methods.limita = function (pais) {
-    for (let limite of this.limites) {
-        if (limite == pais) {
-            return true
-        }
-    }
-    return false
+    return this.limites.indexOf(pais) != -1
 }
 
 paisSchema.methods.distancia = function (pais) {
     let distancia = 0
-    if (this == pais) {
-        return distancia
-    }
+    if (this == pais) return distancia
     distancia++
-    if (this.limita(pais)) {
-        return distancia
+    if (this.limita(pais)) return distancia
+    distancia++
+    for (let lim of this.limites) {
+        if (lim.limites.indexOf(pais) != -1) return distancia
     }
     distancia++
     for (let lim of this.limites) {
         for (let limlim of lim.limites) {
-            if (limlim == pais) {
-                return distancia
-            }
-        }
-    }
-    distancia++
-    for (let lim of this.limites) {
-        for (let limlim of lim.limites) {
-            for (let limlimlim of limlim.limites) {
-                if (limlimlim == pais) {
-                    return distancia
-                }
-            }
+            if (limlim.limites.indexOf(pais) != -1) return distancia
         }
     }
     throw ("muy lejos")

@@ -147,7 +147,7 @@ io.on('connection', cliente => {
 			jugadores[i].emit("objetivo", jugadorDtos[i].objetivo)
 		}
 		for (let i = 0; i < mazoPaisesDto.length; i++) {
-			mazoPaisesDto[i].jugador = colores[i % jugadores.length]
+			mazoPaisesDto[i].jugador = jugadorDtos[i % jugadorDtos.length]
 		}
 		io.emit("iniciaJuego", paisesDto)
 		desordenar(mazoPaisesDto)
@@ -174,10 +174,10 @@ io.on('connection', cliente => {
 				paisDtoD.ejercitos++
 			} else {
 				validarFaseAtaque()
-				if (cartaGlobal.fronteraAbierta && paisDtoA.continente == paisDtoA.continente) {
+				if (cartaGlobal.fronteraAbierta && paisDtoA.continente == paisDtoD.continente) {
 					throw ("en fronteras abiertas hay que atacar fuera del continente")
 				}
-				if (cartaGlobal.fronteraCerrada && paisDtoA.continente != paisDtoA.continente) {
+				if (cartaGlobal.fronteraCerrada && paisDtoA.continente != paisDtoD.continente) {
 					throw ("en fronteras cerradas hay que atacar dentro del continente")
 				}
 				const ejercitosA = paisDtoA.ejercitos
@@ -252,16 +252,16 @@ io.on('connection', cliente => {
 				return
 			}
 			if (faseReagrupe) {
-				if (jugadorDtos[turno % jugadores.length].puedeSacarCarta()) {
+				if (jugadorDtos[turno % jugadorDtos.length].puedeSacarCarta()) {
 					const carta = mazoPaisesDto.splice(0, 1)
-					jugadorDtos[turno % jugadores.length].cartasPais.push(carta)
-					cliente.emit("cartaPais", jugadorDtos[turno % jugadores.length])
+					jugadorDtos[turno % jugadorDtos.length].cartasPais.push(carta)
+					cliente.emit("cartaPais", jugadorDtos[turno % jugadorDtos.length])
 					if (carta.jugador = jugador.color) {
-						carta.ejercitos+=3
+						carta.ejercitos += 3
 						io.emit("ponerPais", carta)
 					}
 				}
-				jugadorDtos[turno % jugadores.length].paisesCapturadosRonda = 0
+				jugadorDtos[turno % jugadorDtos.length].paisesCapturadosRonda = 0
 			}
 			turno++
 			if (turno % jugadores.length == 0) {
@@ -277,7 +277,7 @@ io.on('connection', cliente => {
 				} else if (faseReagrupe) {
 					faseReagrupe = false
 					faseRecarga = true
-					fichas = parseInt(jugadorDtos[turno % jugadores.length].paisesJugador(paisesDto).length / 2)
+					fichas = parseInt(jugadorDtos[turno % jugadorDtos.length].paisesJugador(paisesDto).length / 2)
 				} else if (faseRecarga) {
 					faseRecarga = false
 					faseAtaque = true
@@ -293,7 +293,7 @@ io.on('connection', cliente => {
 					faseReagrupe = false
 					faseAtaque = true
 				} else if (faseRecarga) {
-					fichas = parseInt(jugadorDtos[turno % jugadores.length].paisesJugador(paisesDto).length / 2)
+					fichas = parseInt(jugadorDtos[turno % jugadorDtos.length].paisesJugador(paisesDto).length / 2)
 				}
 			}
 		} catch (e) {
@@ -341,7 +341,7 @@ function validarTurno(cliente, paisDto) {
 	if (jugadores[turno % jugadores.length] != cliente) {
 		throw ('no es tu turno')
 	}
-	if (paisDto && turno % jugadores.length != colores.indexOf(paisDto.jugador)) {
+	if (paisDto && jugadorDtos[turno % jugadorDtos.length] != paisDto.jugador) {
 		throw ('no es tu pais')
 	}
 }

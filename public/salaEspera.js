@@ -34,7 +34,7 @@ server.on("saleJugador", nombre => {
 
 server.on("resultado", resultado => {
     let imagen = document.getElementById(resultado.defensa.id)
-    imagen.src = `${resultado.defensa.jugador}/${resultado.defensa.archivo}`
+    imagen.src = `${resultado.defensa.jugador.color}/${resultado.defensa.archivo}`
     document.getElementById("f" + resultado.ataque.id).innerHTML = `ejercitos:${resultado.ataque.ejercitos}`
     document.getElementById("m" + resultado.ataque.id).innerHTML = `misiles:${resultado.ataque.misiles}`
     document.getElementById("f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
@@ -60,7 +60,7 @@ server.on("iniciaJuego", paises => {
     mapa.appendChild(imagen)
     for (let pais of paises) {
         imagen = new Image()
-        imagen.src = `${pais.jugador}/${pais.archivo}`
+        imagen.src = `${pais.jugador.color}/${pais.archivo}`
         imagen.id = pais.id
         imagen.draggable = false
         imagen.alt = pais.nombre

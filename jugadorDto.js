@@ -1,12 +1,11 @@
 class JugadorDto {
-    constructor(color, nombre, objetivo) {
+    constructor(color, nombre) {
         this.color = color
         this.nombre = nombre
         this.cantidadCanjes = 0
         this.paisesCapturadosRonda = 0
         this.cartasPais = []
         this.cartasContinente = []
-        this.objetivo = objetivo
     }
 
     static get SUMA_CANJE() {
@@ -66,7 +65,7 @@ class JugadorDto {
     paisesJugador(paisesDto) {
         const paises = []
         for (let paisDto of paisesDto) {
-            if (paisDto.jugador == this.color) {
+            if (paisDto.jugador == this) {
                 paises.push(paisDto)
             }
         }
@@ -74,22 +73,17 @@ class JugadorDto {
     }
 
     paisesContinente(paisesDto, continente) {
-        let paises = 0
-        for (let paisDto of this.paisesJugador(paisesDto)) {
-            if (paisDto.continente == continente) {
-                paises++
+        const paises = this.paisesJugador(paisesDto)
+        for (let paisDto of continente.paisesContinente(paisesDto)) {
+            if (paises.indexOf(paisDto) != -1) {
+                paises.push(paisDto)
             }
         }
         return paises
     }
 
     conquistaContinente(paisesDto, continente) {
-        for (let paisDto of paisesDto) {
-            if (paisDto.continente == continente && paisDto.jugador != this.color) {
-                return false
-            }
-        }
-        return true
+        return continente.paisesContinente(paisesDto).length == this.paisesContinente(paisesDto, continente).length
     }
 }
 

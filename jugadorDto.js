@@ -85,6 +85,11 @@ class JugadorDto {
     conquistaContinente(paisesDto, continente) {
         return continente.paisesContinente(paisesDto).length == this.paisesContinente(paisesDto, continente).length
     }
+
+    gana(paisD, paises, continentes) {
+        if (this.paisesJugador(paises) >= 45) return true
+        return this.objetivo.cumpleObjetivo(this, paisD.jugador, paises, continentes)
+    }
 }
 
 exports.JugadorDto = JugadorDto

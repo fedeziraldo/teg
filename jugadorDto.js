@@ -65,7 +65,7 @@ class JugadorDto {
     paisesJugador(paisesDto) {
         const paises = []
         for (let paisDto of paisesDto) {
-            if (paisDto.jugador == this) {
+            if (paisDto.jugador == this.color) {
                 paises.push(paisDto)
             }
         }

@@ -7,7 +7,7 @@ const objetivoSchema = new mongoose.Schema({
     nombre: String
 })
 
-paisSchema.methods.cumpleObjetivo = function (jugadorA, jugadorD, paisesDto, continentes) {
+objetivoSchema.methods.cumpleObjetivo = function (jugadorA, jugadorD, paisesDto, continentes) {
     return objetivos[this.id - 1](jugadorA, jugadorD, paisesDto, continentes)
 }
 

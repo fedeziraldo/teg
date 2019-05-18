@@ -484,7 +484,7 @@ db.paises.insert([
     archivo: 'NUEVA_ZELANDIA.png',
     posX: 1233,
     posY: 1074,
-    continente: 8,
+    continente: 7,
     escudo: 5,
   },
   {

@@ -16,6 +16,7 @@ const Escudo = require('./modelos/escudos').Escudo
 const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
 
 let cargaPaises
+let cargaEscudos
 const jugadores = []
 const jugadorDtos = []
 const paisesDto = []
@@ -51,24 +52,26 @@ Pais.find((err, paises) => {
 			paises[limite.pais2 - 1].limites.push(paises[limite.pais1 - 1])
 		}
 		cargaPaises = paises
+
+		for (let pais of paises) {
+			const paisDto = new PaisDto(pais)
+			paisesDto.push(paisDto)
+			for (let limite of pais.limites) {
+				paisDto.limites.push(limite.id)
+			}
+		}
+		mazoPaisesDto.push(...paisesDto)
+		desordenar(mazoPaisesDto)
 	})
 
 	Escudo.find((err, escudos) => {
 		if (err) return console.error(err)
-		for (let pais of paises) {
-			pais.escudo = escudos[pais.escudo - 1]
-			paisesDto.push(new PaisDto(pais))
-		}
-		mazoPaisesDto.push(...paisesDto)
-		desordenar(mazoPaisesDto)
-	
-		Continente.find((err, continentes) => {
-			if (err) return console.error(err)
-			for (let continente of continentes) {
-				continente.escudo = escudos[continente.escudo - 1]
-			}
-			mazoContinentes = continentes
-		})
+		cargaEscudos = escudos
+	})
+
+	Continente.find((err, continentes) => {
+		if (err) return console.error(err)
+		mazoContinentes = continentes
 	})
 })
 
@@ -147,9 +150,10 @@ io.on('connection', cliente => {
 			jugadores[i].emit("objetivo", jugadorDtos[i].objetivo)
 		}
 		for (let i = 0; i < mazoPaisesDto.length; i++) {
-			mazoPaisesDto[i].jugador = jugadorDtos[i % jugadorDtos.length]
+			mazoPaisesDto[i].jugador = jugadorDtos[i % jugadorDtos.length].color
 		}
 		io.emit("iniciaJuego", paisesDto)
+		io.emit("turno", jugadorDtos[turno % jugadorDtos.length].nombre)
 		desordenar(mazoPaisesDto)
 	})
 
@@ -191,7 +195,7 @@ io.on('connection', cliente => {
 				paisDtoD.ejercitos -= resultado
 				paisDtoA.ejercitos -= enfrentamientos - resultado
 				if (paisDtoD.ejercitos < 1) {
-					jugadorDtos[colores.indexOf(paisDtoA.jugador)].paisesCapturadosRonda++
+					jugadorDtos[turno % jugadorDtos.length].paisesCapturadosRonda++
 					paisDtoA.ejercitos--
 					paisDtoD.ejercitos++
 					paisDtoD.jugador = paisDtoA.jugador
@@ -253,10 +257,10 @@ io.on('connection', cliente => {
 			}
 			if (faseReagrupe) {
 				if (jugadorDtos[turno % jugadorDtos.length].puedeSacarCarta()) {
-					const carta = mazoPaisesDto.splice(0, 1)
+					const carta = mazoPaisesDto.splice(0, 1)[0]
 					jugadorDtos[turno % jugadorDtos.length].cartasPais.push(carta)
-					cliente.emit("cartaPais", jugadorDtos[turno % jugadorDtos.length])
-					if (carta.jugador = jugador.color) {
+					cliente.emit("cartaPais", carta)
+					if (carta.jugador == jugadorDtos[turno % jugadorDtos.length]) {
 						carta.ejercitos += 3
 						io.emit("ponerPais", carta)
 					}
@@ -296,6 +300,7 @@ io.on('connection', cliente => {
 					fichas = parseInt(jugadorDtos[turno % jugadorDtos.length].paisesJugador(paisesDto).length / 2)
 				}
 			}
+			io.emit("turno", jugadorDtos[turno % jugadorDtos.length].nombre)
 		} catch (e) {
 			console.log(e)
 			cliente.emit('jugadaInvalida', e)
@@ -341,7 +346,7 @@ function validarTurno(cliente, paisDto) {
 	if (jugadores[turno % jugadores.length] != cliente) {
 		throw ('no es tu turno')
 	}
-	if (paisDto && jugadorDtos[turno % jugadorDtos.length] != paisDto.jugador) {
+	if (paisDto && jugadorDtos[turno % jugadorDtos.length].color != paisDto.jugador) {
 		throw ('no es tu pais')
 	}
 }
@@ -385,9 +390,10 @@ function validarFaseReagrupe() {
 }
 
 function validarBloqueo(paisDto) {
-	const limites = paises[paisDto.id - 1].limites
+	const limites = []
+	limites.push(...paisDto.limites)
 	for (let i = 0; i < limites.length; i++) {
-		limites[i] = paisesDto[limites[i].id - 1]
+		limites[i] = paisesDto[limites[i] - 1]
 	}
 	if (paisDto.bloqueado(limites)) {
 		throw ("el pais esta bloqueado")

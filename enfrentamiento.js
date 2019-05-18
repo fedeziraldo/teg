@@ -16,16 +16,16 @@ function enfrentamientos(ejercitosA, ejercitosD) {
 }
 
 function tirarDadosA(ejercitosA, ejercitosD, ataque) {
-    return tirarDados(Math.min(ejercitosA - 1, MAXIMO_NORMAL + duplica(ejercitosA, ejercitosD) + ataque, MAXIMO_NORMAL + 1))
+    return tirarDados(Math.min(ejercitosA - 1, MAXIMO_NORMAL) + ataque + duplica(ejercitosA, ejercitosD))
 }
 
 function tirarDadosD(ejercitos, defensa) {
-    return tirarDados(Math.min(ejercitos, MAXIMO_NORMAL + defensa))
+    return tirarDados(Math.min(ejercitos, MAXIMO_NORMAL) + defensa)
 }
 
 function tirarDados(cantidad) {
     const dados = []
-    for (let i = 0; i < cantidad; i++) {
+    for (let i = 0; i < Math.min(cantidad, MAXIMO_NORMAL + 1); i++) {
         dados.push(tirarDado())
     }
     return ordenar(dados)

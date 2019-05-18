@@ -5,11 +5,12 @@ class PaisDto {
         this.archivo = pais.archivo
         this.posX = pais.posX
         this.posY = pais.posY
-        this.escudo = pais.escudo.tipo
-        this.continente = pais.continente.id
-        this.jugador = 0
+        this.escudo = pais.escudo
+        this.continente = pais.continente
+        this.jugador = ""
         this.ejercitos = 1
         this.misiles = 0
+        this.limites = []
     }
 
     static get BLOQUEO() {
@@ -21,7 +22,7 @@ class PaisDto {
             return false
         }
         const bloqueador = limiteDtos[0].jugador
-        if (bloqueador.jugador == this.jugador) {
+        if (bloqueador == this.jugador) {
             return false
         }
         for (let limiteDto of limiteDtos) {

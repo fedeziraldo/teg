@@ -195,6 +195,9 @@ io.on('connection', cliente => {
 				paisDtoD.ejercitos -= resultado
 				paisDtoA.ejercitos -= enfrentamientos - resultado
 				if (paisDtoD.ejercitos < 1) {
+					if (jugadorDtos[turno % jugadorDtos.length].gana(paisDtoD, paisesDto, mazoContinentes)) {
+						throw ("guau")
+					}
 					jugadorDtos[turno % jugadorDtos.length].paisesCapturadosRonda++
 					paisDtoA.ejercitos--
 					paisDtoD.ejercitos++
@@ -260,7 +263,7 @@ io.on('connection', cliente => {
 					const carta = mazoPaisesDto.splice(0, 1)[0]
 					jugadorDtos[turno % jugadorDtos.length].cartasPais.push(carta)
 					cliente.emit("cartaPais", carta)
-					if (carta.jugador == jugadorDtos[turno % jugadorDtos.length]) {
+					if (carta.jugador == jugadorDtos[turno % jugadorDtos.length].color) {
 						carta.ejercitos += 3
 						io.emit("ponerPais", carta)
 					}

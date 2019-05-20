@@ -73,9 +73,10 @@ class JugadorDto {
     }
 
     paisesContinente(paisesDto, continente) {
-        const paises = this.paisesJugador(paisesDto)
+        const paises = []
+        const paisesJugador = this.paisesJugador(paisesDto)
         for (let paisDto of continente.paisesContinente(paisesDto)) {
-            if (paises.indexOf(paisDto) != -1) {
+            if (paisesJugador.indexOf(paisDto) != -1) {
                 paises.push(paisDto)
             }
         }

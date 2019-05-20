@@ -42,6 +42,8 @@ let faseRecarga = false
 let captura = false
 let fichas = FASE8
 
+let traslados = []
+
 Pais.find((err, paises) => {
 	if (err) return console.error(err)
 
@@ -174,6 +176,9 @@ io.on('connection', cliente => {
 				throw ("no son limitrofes")
 			} else if (paisDtoA.jugador == paisDtoD.jugador) {
 				validarFaseReagrupe()
+				if (traslados[ataque.ataque - 1].ejercitos <= 0) {
+					throw ("no se puede trasladar mas ejercitos desde este pais")
+				}
 				paisDtoA.ejercitos--
 				paisDtoD.ejercitos++
 			} else {
@@ -225,6 +230,9 @@ io.on('connection', cliente => {
 				throw ("no son limitrofes")
 			} else if (paisDtoA.jugador == paisDtoD.jugador) {
 				validarFaseReagrupe()
+				if (traslados[ataque.ataque - 1].misiles <= 0) {
+					throw ("no se puede trasladar mas misiles desde este pais")
+				}
 				paisDtoD.misiles++
 				paisDtoA.misiles--
 			} else {
@@ -256,6 +264,9 @@ io.on('connection', cliente => {
 			if (faseAtaque) {
 				faseAtaque = false
 				faseReagrupe = true
+				for (let paisDto of paisesDto) {
+					traslados.push({ ejercitos: paisDto.ejercitos - 1, misiles: paisDto.misiles })
+				}
 				return
 			}
 			if (faseReagrupe) {
@@ -282,6 +293,7 @@ io.on('connection', cliente => {
 					cartaGlobal = mazoCartaGlobales.pop()
 					io.emit("cartaGlobal", cartaGlobal)
 				} else if (faseReagrupe) {
+					traslados = []
 					faseReagrupe = false
 					faseRecarga = true
 					fichas = parseInt(jugadorDtos[turno % jugadorDtos.length].paisesJugador(paisesDto).length / 2)
@@ -297,6 +309,7 @@ io.on('connection', cliente => {
 				} else if (fase4) {
 					fichas = FASE4
 				} else if (faseReagrupe) {
+					traslados = []
 					faseReagrupe = false
 					faseAtaque = true
 				} else if (faseRecarga) {

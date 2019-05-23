@@ -121,7 +121,6 @@ app.post('/entrar', (req, res) => {
 io.on('connection', cliente => {
 	cliente.on('nombre', nombre => {
 		clientes[nombre] = cliente
-		cliente.nombre = nombre
 		console.log(`${nombre} conectado`)
 		cliente.broadcast.emit("agregarJugador", nombre)
 		cliente.emit("listaJugadores", Object.keys(clientes))
@@ -134,7 +133,7 @@ io.on('connection', cliente => {
 				jugadores.splice(jugadores.indexOf(cliente), 1)
 				console.log(`${nombre} desconectado`)
 				delete clientes[nombre]
-				io.emit("saleJugador", nombre)
+				io.emit("listaJugadores", Object.keys(clientes))
 				break
 			}
 		}
@@ -149,7 +148,7 @@ io.on('connection', cliente => {
 		io.emit("jugadores", jugadorDtos)
 		for (let i = 0; i < jugadorDtos.length; i++) {
 			jugadorDtos[i].objetivo = mazoObjetivos.pop()
-			jugadores[i].emit("objetivo", jugadorDtos[i].objetivo)
+			jugadores[i].emit("objetivo", jugadorDtos[i])
 		}
 		for (let i = 0; i < mazoPaisesDto.length; i++) {
 			mazoPaisesDto[i].jugador = jugadorDtos[i % jugadorDtos.length].color
@@ -179,6 +178,7 @@ io.on('connection', cliente => {
 				if (traslados[ataque.ataque - 1].ejercitos <= 0) {
 					throw ("no se puede trasladar mas ejercitos desde este pais")
 				}
+				traslados[ataque.ataque - 1].ejercitos--
 				paisDtoA.ejercitos--
 				paisDtoD.ejercitos++
 			} else {
@@ -233,6 +233,7 @@ io.on('connection', cliente => {
 				if (traslados[ataque.ataque - 1].misiles <= 0) {
 					throw ("no se puede trasladar mas misiles desde este pais")
 				}
+				traslados[ataque.ataque - 1].misiles--
 				paisDtoD.misiles++
 				paisDtoA.misiles--
 			} else {
@@ -273,7 +274,7 @@ io.on('connection', cliente => {
 				if (jugadorDtos[turno % jugadorDtos.length].puedeSacarCarta()) {
 					const carta = mazoPaisesDto.splice(0, 1)[0]
 					jugadorDtos[turno % jugadorDtos.length].cartasPais.push(carta)
-					cliente.emit("cartaPais", carta)
+					cliente.emit("objetivo", jugadorDtos[turno % jugadorDtos.length])
 					if (carta.jugador == jugadorDtos[turno % jugadorDtos.length].color) {
 						carta.ejercitos += 3
 						io.emit("ponerPais", carta)
@@ -297,6 +298,9 @@ io.on('connection', cliente => {
 					faseReagrupe = false
 					faseRecarga = true
 					fichas = parseInt(jugadorDtos[turno % jugadorDtos.length].paisesJugador(paisesDto).length / 2)
+					for (let continente of jugadorDtos[turno % jugadorDtos.length].cartasContinente) {
+						fichas += continente.fichas
+					}
 				} else if (faseRecarga) {
 					faseRecarga = false
 					faseAtaque = true
@@ -314,6 +318,9 @@ io.on('connection', cliente => {
 					faseAtaque = true
 				} else if (faseRecarga) {
 					fichas = parseInt(jugadorDtos[turno % jugadorDtos.length].paisesJugador(paisesDto).length / 2)
+					for (let continente of jugadorDtos[turno % jugadorDtos.length].cartasContinente) {
+						fichas += continente.fichas
+					}
 				}
 			}
 			io.emit("turno", jugadorDtos[turno % jugadorDtos.length].nombre)
@@ -356,6 +363,30 @@ io.on('connection', cliente => {
 			cliente.emit('jugadaInvalida', e)
 		}
 	})
+	cliente.on('canjear', cartas => {
+		try {
+			validarTurno(cliente)
+			validarFaseRecargaMisiles()
+			const paises = []
+			for (let carta of cartas.paises) {
+				paises.push(paisesDto[carta - 1])
+			}
+			const continentes = []
+			for (let carta of cartas.continentes) {
+				continentes.push(mazoContinentes[carta - 1])
+			}
+			if (jugadorDtos[turno % jugadorDtos.length].puedeCanjear(paises, continentes)) {
+				fichas += jugadorDtos[turno % jugadorDtos.length].fichasCanje()
+				jugadorDtos[turno % jugadorDtos.length].cantidadCanjes++
+				cliente.emit("objetivo", jugadorDtos[turno % jugadorDtos.length])
+			} else {
+				throw ("no se puede hacer el canje con esas cartas")
+			}
+		} catch (e) {
+			console.log(e)
+			cliente.emit('jugadaInvalida', e)
+		}
+	})
 })
 
 function validarTurno(cliente, paisDto) {
@@ -364,6 +395,9 @@ function validarTurno(cliente, paisDto) {
 	}
 	if (paisDto && jugadorDtos[turno % jugadorDtos.length].color != paisDto.jugador) {
 		throw ('no es tu pais')
+	}
+	if (cartaGlobal && cartaGlobal.color == jugadorDtos[turno % jugadorDtos.length].color) {
+		throw ('estas en descanso')
 	}
 }
 
@@ -389,7 +423,7 @@ function validarFaseAtaque() {
 
 function validarFaseRecargaMisiles() {
 	if (!faseRecarga) {
-		throw ("no se puede poner fichas ni comprar o vender misiles ahora")
+		throw ("no se puede poner fichas ni comprar o vender misiles ahora ni canjear")
 	}
 }
 

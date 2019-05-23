@@ -1,6 +1,6 @@
 const mongoose = require('./mongooseTeg').mongoose
 
-const objetivos = [europaAmSur, amNorteOceania6Africa, asiaAmCentral]
+const objetivos = [europaAmSur, amNorteOceania6Africa, asiaAmCentral,europaAmSur, amNorteOceania6Africa, asiaAmCentral,europaAmSur, amNorteOceania6Africa, asiaAmCentral,europaAmSur, amNorteOceania6Africa, asiaAmCentral,europaAmSur, amNorteOceania6Africa, asiaAmCentral,europaAmSur, amNorteOceania6Africa, asiaAmCentral,europaAmSur, amNorteOceania6Africa, asiaAmCentral]
 
 const objetivoSchema = new mongoose.Schema({
     id: Number,

@@ -6,6 +6,7 @@ class JugadorDto {
         this.paisesCapturadosRonda = 0
         this.cartasPais = []
         this.cartasContinente = []
+        this.objetivo = "capturar 45 paises"
     }
 
     static get SUMA_CANJE() {
@@ -60,6 +61,11 @@ class JugadorDto {
             }
         }
         return false
+    }
+
+    fichasCanje() {
+        if (this.cantidadCanjes == 0) return 6
+        return 5 * this.cantidadCanjes
     }
 
     paisesJugador(paisesDto) {

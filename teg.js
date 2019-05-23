@@ -54,26 +54,27 @@ Pais.find((err, paises) => {
 			paises[limite.pais2 - 1].limites.push(paises[limite.pais1 - 1])
 		}
 		cargaPaises = paises
-
-		for (let pais of paises) {
-			const paisDto = new PaisDto(pais)
-			paisesDto.push(paisDto)
-			for (let limite of pais.limites) {
-				paisDto.limites.push(limite.id)
-			}
-		}
-		mazoPaisesDto.push(...paisesDto)
-		desordenar(mazoPaisesDto)
-	})
-
-	Escudo.find((err, escudos) => {
-		if (err) return console.error(err)
-		cargaEscudos = escudos
-	})
-
-	Continente.find((err, continentes) => {
-		if (err) return console.error(err)
-		mazoContinentes = continentes
+	
+		Escudo.find((err, escudos) => {
+			if (err) return console.error(err)
+			cargaEscudos = escudos
+		
+			Continente.find((err, continentes) => {
+				if (err) return console.error(err)
+				mazoContinentes = continentes
+				for (let pais of paises) {
+					const paisDto = new PaisDto(pais)
+					paisesDto.push(paisDto)
+					for (let limite of pais.limites) {
+						paisDto.limites.push(limite.id)
+					}
+					paisDto.continente = continentes[paisDto.continente - 1]
+					paisDto.escudo = continentes[paisDto.escudo - 1]
+				}
+				mazoPaisesDto.push(...paisesDto)
+				desordenar(mazoPaisesDto)
+			})
+		})
 	})
 })
 
@@ -206,7 +207,15 @@ io.on('connection', cliente => {
 					jugadorDtos[turno % jugadorDtos.length].paisesCapturadosRonda++
 					paisDtoA.ejercitos--
 					paisDtoD.ejercitos++
+					if (jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])].conquistaContinente(paisesDto, paisDtoD.continente)) {
+						jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])].cartasContinente.splice(jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])].cartasContinente.indexOf(paisDtoD.continente), 1)
+						clientes[paisDtoD.jugador].emit("objetivo", jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])])
+					}
 					paisDtoD.jugador = paisDtoA.jugador
+					if (jugadorDtos[turno % jugadorDtos.length].conquistaContinente(paisesDto, paisDtoD.continente)) {
+						jugadorDtos[turno % jugadorDtos.length].cartasContinente.push(mazoContinentes[paisDtoD.continente.id - 1])
+						cliente.emit("objetivo", jugadorDtos[turno % jugadorDtos.length])
+					}
 				}
 			}
 			io.emit("resultado", { ataque: paisDtoA, defensa: paisDtoD })
@@ -378,6 +387,13 @@ io.on('connection', cliente => {
 			if (jugadorDtos[turno % jugadorDtos.length].puedeCanjear(paises, continentes)) {
 				fichas += jugadorDtos[turno % jugadorDtos.length].fichasCanje()
 				jugadorDtos[turno % jugadorDtos.length].cantidadCanjes++
+				for (let pais of paises) {
+					jugadorDtos[turno % jugadorDtos.length].cartasPais.splice(jugadorDtos[turno % jugadorDtos.length].cartasPais.indexOf(pais), 1)
+				}
+				mazoPaisesDto.push(...paises)
+				for (let continente of continentes) {
+					continente.jugadores(jugadorDtos[turno % jugadorDtos.length].color)
+				}
 				cliente.emit("objetivo", jugadorDtos[turno % jugadorDtos.length])
 			} else {
 				throw ("no se puede hacer el canje con esas cartas")

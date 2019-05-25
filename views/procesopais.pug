@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Document
+    body
+     each val1 in results[0]
+        form(action = "/procesopais", method = "POST")        
+            input(name='_id' value=val1._id type='hidden')
+            input(name='nombre' value=val1.nombre )
+            select(name='escudoSeleccionado')
+               each val2 in results[1]
+                option(value=val2._id ,selected=val2.tipo==val1.escudo.tipo)=val2.tipo
+            button(type = "submit") enviar

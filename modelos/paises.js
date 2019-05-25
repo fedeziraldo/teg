@@ -1,13 +1,13 @@
 const mongoose = require('./mongooseTeg').mongoose
-
+const Schema = mongoose.Schema;
 const paisSchema = new mongoose.Schema({
     id: Number,
     nombre: String,
     archivo: String,
     posX: Number,
     posY: Number,
-    continente: Number,
-    escudo: String,
+    continente:{ type: Schema.Types.ObjectId, ref: 'continentes' },
+    escudo: { type: Schema.Types.ObjectId, ref: 'escudos' },
     limites: Array
 })
 

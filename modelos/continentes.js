@@ -1,10 +1,12 @@
 const mongoose = require('./mongooseTeg').mongoose
+const Schema = mongoose.Schema;
 
 const continenteSchema = new mongoose.Schema({
     id: Number,
     nombre: String,
     fichas: Number,
-    escudo: String,
+    escudo: { type: Schema.Types.ObjectId, ref: 'escudos' },
+    paises:[{ type: Schema.Types.ObjectId, ref: 'paises' }]
 })
 
 continenteSchema.methods.paisesContinente = function (paisesDto) {

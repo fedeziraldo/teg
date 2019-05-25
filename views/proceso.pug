@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Document
+    body
+     each val1 in results[0]
+        form(action = "/proceso", method = "POST")        
+            input(name='_id' value=val1._id type='hidden')
+            input(name='nombre' value=val1.nombre )
+            select(name='continenteSeleccionado')
+               each val2 in results[1]             
+                option(value=val2._id ,selected=val2.nombre==val1.continente.nombre)=val2.nombre
+            select(name='escudoSeleccionado')
+               each val3 in results[2]
+                option(value=val3._id ,selected=val3.tipo===val1.escudo.tipo)=val3.tipo
+            button(type = "submit") enviar

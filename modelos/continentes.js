@@ -6,7 +6,9 @@ const continenteSchema = new mongoose.Schema({
     nombre: String,
     fichas: Number,
     escudo: { type: Schema.Types.ObjectId, ref: 'escudos' },
-    paises:[{ type: Schema.Types.ObjectId, ref: 'paises' }]
+    paises:[{ type: Schema.Types.ObjectId, ref: 'paises' }],
+    
+    jugadores: []
 })
 
 continenteSchema.methods.paisesContinente = function (paisesDto) {

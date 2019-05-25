@@ -6,6 +6,7 @@ class JugadorDto {
         this.paisesCapturadosRonda = 0
         this.cartasPais = []
         this.cartasContinente = []
+        this.objetivo = "capturar 45 paises"
     }
 
     static get SUMA_CANJE() {
@@ -31,6 +32,11 @@ class JugadorDto {
         for (let carta in cartas) {
             if (this.cartasPais.indexOf(carta) == -1 && this.cartasContinente.indexOf(carta) == -1) {
                 throw ("no tenes esas cartas")
+            }
+        }
+        for (let continente of continentes) {
+            if (continente.jugadores.indexOf(this.color) != -1) {
+                throw ("no podes usar 2 veces la misma tarjeta de continente")
             }
         }
         if (cartas.length == 0) {
@@ -60,6 +66,11 @@ class JugadorDto {
             }
         }
         return false
+    }
+
+    fichasCanje() {
+        if (this.cantidadCanjes == 0) return 6
+        return 5 * this.cantidadCanjes
     }
 
     paisesJugador(paisesDto) {

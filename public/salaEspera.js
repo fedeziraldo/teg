@@ -13,6 +13,7 @@ function enviarNombre(nombre) {
 
 server.on("listaJugadores", lista => {
     let ul = document.getElementById("jugadores")
+    ul.innerHTML = ""
     for (let j of lista) {
         ul.innerHTML += `<li>${j}</li>`
     }
@@ -20,15 +21,6 @@ server.on("listaJugadores", lista => {
 
 server.on("agregarJugador", nombre => {
     document.getElementById("jugadores").innerHTML += `<li>${nombre}</li>`
-})
-
-server.on("saleJugador", nombre => {
-    let ul = document.getElementById("jugadores")
-    for (let l of ul.getElementsByTagName("li")) {
-        if (l.innerHTML == nombre) {
-            ul.removeChild(l)
-        }
-    }
 })
 
 server.on("resultado", resultado => {
@@ -51,6 +43,10 @@ server.on("iniciaJuego", paises => {
     botonPasarTurno.addEventListener('click', pasarTurno)
     botonPasarTurno.innerHTML = 'Pasar Turno'
     document.body.appendChild(botonPasarTurno)
+    const botonCanjear = document.createElement('button')
+    botonCanjear.addEventListener('click', canjear)
+    botonCanjear.innerHTML = 'Canjear'
+    document.body.appendChild(botonCanjear)
     inicio.style.display = "none"
 
     let imagen = new Image()
@@ -117,8 +113,20 @@ server.on("turno", nombre => {
     document.getElementById("turno").innerHTML = `le toca a ${nombre}`
 })
 
-server.on("objetivo", objetivo => {
-    document.getElementById("objetivo").innerHTML = `${objetivo.nombre}`
+server.on("objetivo", jugador => {
+    document.getElementById("objetivo").innerHTML = `${jugador.objetivo.nombre}`
+    document.getElementById("cartaPais").innerHTML = ""
+    for (let carta of jugador.cartasPais) {
+        document.getElementById("cartaPais").innerHTML += `<li name="${carta.id}"><input type="checkbox"/>${carta.nombre} (${carta.escudo.tipo})</li>`
+    }
+    document.getElementById("cartaContinente").innerHTML = ""
+    for (let carta of jugador.cartasContinente) {
+        if (carta.jugadores.indexOF(jugador.color) != -1) {
+            document.getElementById("cartaContinente").innerHTML += `<li name="${carta.id}">${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
+        } else {
+            document.getElementById("cartaContinente").innerHTML += `<li name="${carta.id}"><input type="checkbox"/>${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
+        }
+    }
 })
 
 server.on("cartaGlobal", cartaGlobal => {
@@ -133,8 +141,8 @@ server.on("dadosD", dadosD => {
     document.getElementById("dadosD").innerHTML = dadosD
 })
 
-server.on("cartaPais", carta => {
-    document.getElementById("cartaPais").innerHTML += `<li>${carta.nombre}</li>`
+server.on("fichas", fichas => {
+    document.getElementById("fichas").innerHTML = `Te quedan ${fichas} fichas`
 })
 
 function allowDrop(ev) {
@@ -165,4 +173,16 @@ function ponerFicha(ev) {
 }
 function ponerMisil(ev) {
     server.emit('ponerMisil', ev.target.id.substr(1))
+}
+
+function canjear() {
+    const paises = []
+    const continentes = []
+    for (let pais of document.getElementById("cartaPais").children) {
+        paises.push(pais.name)
+    }
+    for (let continente of document.getElementById("cartaContinente").children) {
+        continentes.push(continente.name)
+    }
+    server.emit("canjear", {paises, continentes})
 }

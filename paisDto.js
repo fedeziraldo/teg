@@ -26,7 +26,7 @@ class PaisDto {
             return false
         }
         for (let limiteDto of limiteDtos) {
-            if (limiteDto.ejercitos < 1 || limiteDto.jugador != bloqueador) {
+            if (limiteDto.ejercitos <= 1 || limiteDto.jugador != bloqueador) {
                 return false
             }
         }

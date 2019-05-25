@@ -117,11 +117,15 @@ server.on("objetivo", jugador => {
     document.getElementById("objetivo").innerHTML = `${jugador.objetivo.nombre}`
     document.getElementById("cartaPais").innerHTML = ""
     for (let carta of jugador.cartasPais) {
-        document.getElementById("cartaPais").innerHTML += `<li name="${carta.id}"><input type="checkbox"/>${carta.nombre} (${carta.escudo})</li>`
+        document.getElementById("cartaPais").innerHTML += `<li name="${carta.id}"><input type="checkbox"/>${carta.nombre} (${carta.escudo.tipo})</li>`
     }
     document.getElementById("cartaContinente").innerHTML = ""
     for (let carta of jugador.cartasContinente) {
-        document.getElementById("cartaContinente").innerHTML += `<li name="${carta.id}"><input type="checkbox"/>${carta.nombre} (${carta.fichas}) (${carta.escudo})</li>`
+        if (carta.jugadores.indexOF(jugador.color) != -1) {
+            document.getElementById("cartaContinente").innerHTML += `<li name="${carta.id}">${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
+        } else {
+            document.getElementById("cartaContinente").innerHTML += `<li name="${carta.id}"><input type="checkbox"/>${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
+        }
     }
 })
 
@@ -135,6 +139,10 @@ server.on("dadosA", dadosA => {
 
 server.on("dadosD", dadosD => {
     document.getElementById("dadosD").innerHTML = dadosD
+})
+
+server.on("fichas", fichas => {
+    document.getElementById("fichas").innerHTML = `Te quedan ${fichas} fichas`
 })
 
 function allowDrop(ev) {

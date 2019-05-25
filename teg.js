@@ -16,7 +16,6 @@ const Escudo = require('./modelos/escudos').Escudo
 const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
 
 let cargaPaises
-let cargaEscudos
 const jugadores = []
 const jugadorDtos = []
 const paisesDto = []
@@ -156,6 +155,7 @@ io.on('connection', cliente => {
 		}
 		io.emit("iniciaJuego", paisesDto)
 		io.emit("turno", jugadorDtos[turno % jugadorDtos.length].nombre)
+		io.emit("fichas", fichas)
 		desordenar(mazoPaisesDto)
 	})
 
@@ -176,10 +176,10 @@ io.on('connection', cliente => {
 				throw ("no son limitrofes")
 			} else if (paisDtoA.jugador == paisDtoD.jugador) {
 				validarFaseReagrupe()
-				if (traslados[ataque.ataque - 1].ejercitos <= 0) {
+				if (traslados[paisDtoA.id - 1].ejercitos <= 0) {
 					throw ("no se puede trasladar mas ejercitos desde este pais")
 				}
-				traslados[ataque.ataque - 1].ejercitos--
+				traslados[paisDtoA.id - 1].ejercitos--
 				paisDtoA.ejercitos--
 				paisDtoD.ejercitos++
 			} else {
@@ -200,22 +200,30 @@ io.on('connection', cliente => {
 				const resultado = enfrentamiento.atacar(dadosA, dadosD, enfrentamientos)
 				paisDtoD.ejercitos -= resultado
 				paisDtoA.ejercitos -= enfrentamientos - resultado
+				const jugadorActual = jugadorDtos[turno % jugadorDtos.length]
 				if (paisDtoD.ejercitos < 1) {
-					if (jugadorDtos[turno % jugadorDtos.length].gana(paisDtoD, paisesDto, mazoContinentes)) {
+					if (jugadorActual.gana(paisDtoD, paisesDto, mazoContinentes)) {
 						throw ("guau")
 					}
-					jugadorDtos[turno % jugadorDtos.length].paisesCapturadosRonda++
+					jugadorActual.paisesCapturadosRonda++
 					paisDtoA.ejercitos--
 					paisDtoD.ejercitos++
-					if (jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])].conquistaContinente(paisesDto, paisDtoD.continente)) {
-						jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])].cartasContinente.splice(jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])].cartasContinente.indexOf(paisDtoD.continente), 1)
-						clientes[paisDtoD.jugador].emit("objetivo", jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])])
+					const jugadorAtacado = jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])]
+					if (jugadorAtacado.conquistaContinente(paisesDto, paisDtoD.continente)) {
+						jugadorAtacado.cartasContinente.splice(jugadorAtacado.cartasContinente.indexOf(paisDtoD.continente), 1)
+						clientes[paisDtoD.jugador].emit("objetivo", jugadorAtacado)
 					}
 					paisDtoD.jugador = paisDtoA.jugador
-					if (jugadorDtos[turno % jugadorDtos.length].conquistaContinente(paisesDto, paisDtoD.continente)) {
-						jugadorDtos[turno % jugadorDtos.length].cartasContinente.push(mazoContinentes[paisDtoD.continente.id - 1])
-						cliente.emit("objetivo", jugadorDtos[turno % jugadorDtos.length])
+					if (jugadorActual.conquistaContinente(paisesDto, paisDtoD.continente)) {
+						jugadorActual.cartasContinente.push(mazoContinentes[paisDtoD.continente.id - 1])
+						cliente.emit("objetivo", jugadorActual)
 					}
+					faseAtaque = false
+					captura = true
+					for (let paisDto of paisesDto) {
+						traslados.push({ ejercitos: 0, misiles: 0 })
+					}
+					traslados[paisDtoA.id - 1] = 2
 				}
 			}
 			io.emit("resultado", { ataque: paisDtoA, defensa: paisDtoD })
@@ -233,16 +241,19 @@ io.on('connection', cliente => {
 			const distancia = validarMisil(paisDtoA, paisDtoD)
 			if (distancia == 0) {
 				validarFaseRecargaMisiles()
+				if (paisDtoA.misiles <= 0) {
+					throw ("no hay suficiente para vender misiles")
+				}
 				paisDtoD.ejercitos += MISILES
 				paisDtoA.misiles--
 			} else if (distancia != 1 && paisDtoA.jugador == paisDtoD.jugador) {
 				throw ("no son limitrofes")
 			} else if (paisDtoA.jugador == paisDtoD.jugador) {
 				validarFaseReagrupe()
-				if (traslados[ataque.ataque - 1].misiles <= 0) {
+				if (traslados[paisDtoA.id - 1].misiles <= 0) {
 					throw ("no se puede trasladar mas misiles desde este pais")
 				}
-				traslados[ataque.ataque - 1].misiles--
+				traslados[paisDtoA.id - 1].misiles--
 				paisDtoD.misiles++
 				paisDtoA.misiles--
 			} else {
@@ -271,32 +282,41 @@ io.on('connection', cliente => {
 			if (fichas > 0) {
 				throw ("quedan fichas")
 			}
+			if (captura) {
+				faseAtaque = true
+				captura = false
+				traslados = []
+				return
+			}
 			if (faseAtaque) {
 				faseAtaque = false
 				faseReagrupe = true
 				for (let paisDto of paisesDto) {
-					traslados.push({ ejercitos: paisDto.ejercitos - 1, misiles: paisDto.misiles })
+					traslados.push({ ejercitos: paisDto.ejercitos, misiles: paisDto.misiles })
 				}
 				return
 			}
+			const jugadorActual = jugadorDtos[turno % jugadorDtos.length]
 			if (faseReagrupe) {
-				if (jugadorDtos[turno % jugadorDtos.length].puedeSacarCarta()) {
+				if (jugadorActual.puedeSacarCarta()) {
 					const carta = mazoPaisesDto.splice(0, 1)[0]
-					jugadorDtos[turno % jugadorDtos.length].cartasPais.push(carta)
-					cliente.emit("objetivo", jugadorDtos[turno % jugadorDtos.length])
-					if (carta.jugador == jugadorDtos[turno % jugadorDtos.length].color) {
+					jugadorActual.cartasPais.push(carta)
+					cliente.emit("objetivo", jugadorActual)
+					if (carta.jugador == jugadorActual.color) {
 						carta.ejercitos += 3
 						io.emit("ponerPais", carta)
 					}
 				}
-				jugadorDtos[turno % jugadorDtos.length].paisesCapturadosRonda = 0
+				jugadorActual.paisesCapturadosRonda = 0
 			}
 			turno++
+			jugadorActual = jugadorDtos[turno % jugadorDtos.length]
 			if (turno % jugadores.length == 0) {
 				if (fase8) {
 					fase8 = false
 					fase4 = true
 					fichas = FASE4
+					io.emit("fichas", fichas)
 				} else if (fase4) {
 					fase4 = false
 					faseAtaque = true
@@ -306,10 +326,11 @@ io.on('connection', cliente => {
 					traslados = []
 					faseReagrupe = false
 					faseRecarga = true
-					fichas = parseInt(jugadorDtos[turno % jugadorDtos.length].paisesJugador(paisesDto).length / 2)
-					for (let continente of jugadorDtos[turno % jugadorDtos.length].cartasContinente) {
+					fichas = parseInt(jugadorActual.paisesJugador(paisesDto).length / 2)
+					for (let continente of jugadorActual.cartasContinente) {
 						fichas += continente.fichas
 					}
+					io.emit("fichas", fichas)
 				} else if (faseRecarga) {
 					faseRecarga = false
 					faseAtaque = true
@@ -319,20 +340,23 @@ io.on('connection', cliente => {
 			} else {
 				if (fase8) {
 					fichas = FASE8
+					io.emit("fichas", fichas)
 				} else if (fase4) {
 					fichas = FASE4
+					io.emit("fichas", fichas)
 				} else if (faseReagrupe) {
 					traslados = []
 					faseReagrupe = false
 					faseAtaque = true
 				} else if (faseRecarga) {
-					fichas = parseInt(jugadorDtos[turno % jugadorDtos.length].paisesJugador(paisesDto).length / 2)
-					for (let continente of jugadorDtos[turno % jugadorDtos.length].cartasContinente) {
+					fichas = parseInt(jugadorActual.paisesJugador(paisesDto).length / 2)
+					for (let continente of jugadorActual.cartasContinente) {
 						fichas += continente.fichas
 					}
+					io.emit("fichas", fichas)
 				}
 			}
-			io.emit("turno", jugadorDtos[turno % jugadorDtos.length].nombre)
+			io.emit("turno", jugadorActual.nombre)
 		} catch (e) {
 			console.log(e)
 			cliente.emit('jugadaInvalida', e)
@@ -349,6 +373,7 @@ io.on('connection', cliente => {
 			validarBloqueo(paisDto)
 			paisDto.ejercitos++
 			fichas--
+			io.emit("fichas", fichas)
 			io.emit("ponerPais", paisDto)
 		} catch (e) {
 			console.log(e)
@@ -366,6 +391,7 @@ io.on('connection', cliente => {
 			validarBloqueo(paisDto)
 			paisDto.misiles++
 			fichas -= MISILES
+			io.emit("fichas", fichas)
 			io.emit("ponerPais", paisDto)
 		} catch (e) {
 			console.log(e)
@@ -384,17 +410,19 @@ io.on('connection', cliente => {
 			for (let carta of cartas.continentes) {
 				continentes.push(mazoContinentes[carta - 1])
 			}
-			if (jugadorDtos[turno % jugadorDtos.length].puedeCanjear(paises, continentes)) {
-				fichas += jugadorDtos[turno % jugadorDtos.length].fichasCanje()
-				jugadorDtos[turno % jugadorDtos.length].cantidadCanjes++
+			const jugadorActual = jugadorDtos[turno % jugadorDtos.length]
+			if (jugadorActual.puedeCanjear(paises, continentes)) {
+				fichas += jugadorActual.fichasCanje()
+				jugadorActual.cantidadCanjes++
 				for (let pais of paises) {
-					jugadorDtos[turno % jugadorDtos.length].cartasPais.splice(jugadorDtos[turno % jugadorDtos.length].cartasPais.indexOf(pais), 1)
+					jugadorActual.cartasPais.splice(jugadorActual.cartasPais.indexOf(pais), 1)
 				}
 				mazoPaisesDto.push(...paises)
 				for (let continente of continentes) {
-					continente.jugadores(jugadorDtos[turno % jugadorDtos.length].color)
+					continente.jugadores.push(jugadorActual.color)
 				}
-				cliente.emit("objetivo", jugadorDtos[turno % jugadorDtos.length])
+				io.emit("fichas", fichas)
+				cliente.emit("objetivo", jugadorActual)
 			} else {
 				throw ("no se puede hacer el canje con esas cartas")
 			}
@@ -450,7 +478,7 @@ function validarFaseRecarga() {
 }
 
 function validarFaseReagrupe() {
-	if (!faseReagrupe) {
+	if (!(faseReagrupe || captura)) {
 		throw ("no se puede trasladar ejercitos ni misiles")
 	}
 }

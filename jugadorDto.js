@@ -34,6 +34,11 @@ class JugadorDto {
                 throw ("no tenes esas cartas")
             }
         }
+        for (let continente of continentes) {
+            if (continente.jugadores.indexOf(this.color) != -1) {
+                throw ("no podes usar 2 veces la misma tarjeta de continente")
+            }
+        }
         if (cartas.length == 0) {
             throw ("proba usar cartas")
         }

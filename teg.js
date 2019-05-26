@@ -11,7 +11,6 @@ const Limite = require('./modelos/limites').Limite
 const CartaGlobal = require('./modelos/cartaGlobales').CartaGlobal
 const Continente = require('./modelos/continentes').Continente
 const Objetivo = require('./modelos/objetivos').Objetivo
-const Escudo = require('./modelos/escudos').Escudo
 
 const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
 
@@ -221,7 +220,7 @@ io.on('connection', cliente => {
 					for (let paisDto of paisesDto) {
 						traslados.push({ ejercitos: 0, misiles: 0 })
 					}
-					traslados[paisDtoA.id - 1] = 2
+					traslados[paisDtoA.id - 1].ejercitos = 2
 				}
 			}
 			io.emit("resultado", { ataque: paisDtoA, defensa: paisDtoD })
@@ -383,7 +382,7 @@ io.on('connection', cliente => {
 		try {
 			validarTurno(cliente, paisDto)
 			validarFaseRecargaMisiles()
-			if (fichas <= MISILES) {
+			if (fichas < MISILES) {
 				throw ("no hay suficientes fichas")
 			}
 			validarBloqueo(paisDto)

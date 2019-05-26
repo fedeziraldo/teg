@@ -29,7 +29,10 @@ class JugadorDto {
         if (cartas.length > 3) {
             throw ("demasiadas cartas")
         }
-        for (let carta in cartas) {
+        if (cartas.length == 0) {
+            throw ("proba usar cartas")
+        }
+        for (let carta of cartas) {
             if (this.cartasPais.indexOf(carta) == -1 && this.cartasContinente.indexOf(carta) == -1) {
                 throw ("no tenes esas cartas")
             }
@@ -38,9 +41,6 @@ class JugadorDto {
             if (continente.jugadores.indexOf(this.color) != -1) {
                 throw ("no podes usar 2 veces la misma tarjeta de continente")
             }
-        }
-        if (cartas.length == 0) {
-            throw ("proba usar cartas")
         }
         if (cartas.length == 1) {
             return cartas[0].escudo.valor[0] == JugadorDto.SUMA_CANJE

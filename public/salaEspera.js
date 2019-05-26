@@ -117,14 +117,14 @@ server.on("objetivo", jugador => {
     document.getElementById("objetivo").innerHTML = `${jugador.objetivo.nombre}`
     document.getElementById("cartaPais").innerHTML = ""
     for (let carta of jugador.cartasPais) {
-        document.getElementById("cartaPais").innerHTML += `<li name="${carta.id}"><input type="checkbox"/>${carta.nombre} (${carta.escudo.tipo})</li>`
+        document.getElementById("cartaPais").innerHTML += `<li><input type="checkbox" name="${carta.id}"/>${carta.nombre} (${carta.escudo.tipo})</li>`
     }
     document.getElementById("cartaContinente").innerHTML = ""
     for (let carta of jugador.cartasContinente) {
         if (carta.jugadores.indexOF(jugador.color) != -1) {
-            document.getElementById("cartaContinente").innerHTML += `<li name="${carta.id}">${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
+            document.getElementById("cartaContinente").innerHTML += `<li>${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
         } else {
-            document.getElementById("cartaContinente").innerHTML += `<li name="${carta.id}"><input type="checkbox"/>${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
+            document.getElementById("cartaContinente").innerHTML += `<li><input type="checkbox" name="${carta.id}"/>${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
         }
     }
 })
@@ -179,10 +179,14 @@ function canjear() {
     const paises = []
     const continentes = []
     for (let pais of document.getElementById("cartaPais").children) {
-        paises.push(pais.firstChild.getAttribute("name"))
+        if (pais.firstChild.checked) {
+            paises.push(pais.firstChild.getAttribute("name"))
+        }
     }
     for (let continente of document.getElementById("cartaContinente").children) {
-        continentes.push(continente.firstChild.getAttribute("name"))
+        if (continente.firstChild.checked) {
+            continentes.push(continente.firstChild.getAttribute("name"))
+        }
     }
     server.emit("canjear", {paises, continentes})
 }

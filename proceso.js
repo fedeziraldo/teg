@@ -3,10 +3,6 @@ var app = express();
 var express = require('express');
 var bodyParser = require('body-parser');
 
-
-var app = express();
-
-
 const paises = require('./modelos/paises').Pais
 const continente = require('./modelos/continentes').Continente
 const escudo = require('./modelos/escudos').Escudo

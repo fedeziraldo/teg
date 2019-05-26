@@ -43,7 +43,7 @@ let fichas = FASE8
 
 let traslados = []
 
-Pais.find((err, paises) => {
+Pais.find().populate('continente').populate('escudo').exec((err, paises) => {
 	if (err) return console.error(err)
 
 	Limite.find((err, limites) => {
@@ -53,26 +53,19 @@ Pais.find((err, paises) => {
 			paises[limite.pais2 - 1].limites.push(paises[limite.pais1 - 1])
 		}
 		cargaPaises = paises
-	
-		Escudo.find((err, escudos) => {
-			if (err) return console.error(err)
-			cargaEscudos = escudos
 		
-			Continente.find((err, continentes) => {
-				if (err) return console.error(err)
-				mazoContinentes = continentes
-				for (let pais of paises) {
-					const paisDto = new PaisDto(pais)
-					paisesDto.push(paisDto)
-					for (let limite of pais.limites) {
-						paisDto.limites.push(limite.id)
-					}
-					paisDto.continente = continentes[paisDto.continente - 1]
-					paisDto.escudo = continentes[paisDto.escudo - 1]
+		Continente.find().populate('escudo').exec((err, continentes) => {
+			if (err) return console.error(err)
+			mazoContinentes = continentes
+			for (let pais of paises) {
+				const paisDto = new PaisDto(pais)
+				paisesDto.push(paisDto)
+				for (let limite of pais.limites) {
+					paisDto.limites.push(limite.id)
 				}
-				mazoPaisesDto.push(...paisesDto)
-				desordenar(mazoPaisesDto)
-			})
+			}
+			mazoPaisesDto.push(...paisesDto)
+			desordenar(mazoPaisesDto)
 		})
 	})
 })
@@ -184,10 +177,10 @@ io.on('connection', cliente => {
 				paisDtoD.ejercitos++
 			} else {
 				validarFaseAtaque()
-				if (cartaGlobal.fronteraAbierta && paisDtoA.continente == paisDtoD.continente) {
+				if (cartaGlobal.fronteraAbierta && paisDtoA.continente.id == paisDtoD.continente.id) {
 					throw ("en fronteras abiertas hay que atacar fuera del continente")
 				}
-				if (cartaGlobal.fronteraCerrada && paisDtoA.continente != paisDtoD.continente) {
+				if (cartaGlobal.fronteraCerrada && paisDtoA.continente.id != paisDtoD.continente.id) {
 					throw ("en fronteras cerradas hay que atacar dentro del continente")
 				}
 				const ejercitosA = paisDtoA.ejercitos
@@ -208,7 +201,12 @@ io.on('connection', cliente => {
 					jugadorActual.paisesCapturadosRonda++
 					paisDtoA.ejercitos--
 					paisDtoD.ejercitos++
-					const jugadorAtacado = jugadorDtos[jugadores.indexOf(clientes[paisDtoD.jugador])]
+					let jugadorAtacado
+					for (let jugadorDto of jugadorDtos) {
+						if (jugadorDto.color == paisDtoD.jugador) {
+							jugadorAtacado = jugadorDto
+						}
+					}
 					if (jugadorAtacado.conquistaContinente(paisesDto, paisDtoD.continente)) {
 						jugadorAtacado.cartasContinente.splice(jugadorAtacado.cartasContinente.indexOf(paisDtoD.continente), 1)
 						clientes[paisDtoD.jugador].emit("objetivo", jugadorAtacado)
@@ -296,7 +294,7 @@ io.on('connection', cliente => {
 				}
 				return
 			}
-			const jugadorActual = jugadorDtos[turno % jugadorDtos.length]
+			let jugadorActual = jugadorDtos[turno % jugadorDtos.length]
 			if (faseReagrupe) {
 				if (jugadorActual.puedeSacarCarta()) {
 					const carta = mazoPaisesDto.splice(0, 1)[0]

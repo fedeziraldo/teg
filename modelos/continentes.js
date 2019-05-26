@@ -5,16 +5,14 @@ const continenteSchema = new mongoose.Schema({
     id: Number,
     nombre: String,
     fichas: Number,
-    escudo: { type: Schema.Types.ObjectId, ref: 'escudos' },
-    paises:[{ type: Schema.Types.ObjectId, ref: 'paises' }],
-    
-    jugadores: []
+    escudo: { type: Schema.Types.ObjectId, ref: 'escudos' },    
+    jugadores: Array
 })
 
 continenteSchema.methods.paisesContinente = function (paisesDto) {
     const paises = []
     for (let paisDto of paisesDto) {
-        if (this.id == paisDto.continente) {
+        if (this.id == paisDto.continente.id) {
             paises.push(paisDto)
         }
     }

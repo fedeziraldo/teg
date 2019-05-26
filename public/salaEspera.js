@@ -142,7 +142,7 @@ server.on("dadosD", dadosD => {
 })
 
 server.on("fichas", fichas => {
-    document.getElementById("fichas").innerHTML = `Te quedan ${fichas} fichas`
+    document.getElementById("poner").innerHTML = `le quedan ${fichas} fichas`
 })
 
 function allowDrop(ev) {
@@ -179,10 +179,10 @@ function canjear() {
     const paises = []
     const continentes = []
     for (let pais of document.getElementById("cartaPais").children) {
-        paises.push(pais.name)
+        paises.push(pais.firstChild.getAttribute("name"))
     }
     for (let continente of document.getElementById("cartaContinente").children) {
-        continentes.push(continente.name)
+        continentes.push(continente.firstChild.getAttribute("name"))
     }
     server.emit("canjear", {paises, continentes})
 }

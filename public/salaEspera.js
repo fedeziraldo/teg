@@ -19,10 +19,6 @@ server.on("listaJugadores", lista => {
     }
 })
 
-server.on("agregarJugador", nombre => {
-    document.getElementById("jugadores").innerHTML += `<li>${nombre}</li>`
-})
-
 server.on("resultado", resultado => {
     let imagen = document.getElementById(resultado.defensa.id)
     imagen.src = `${resultado.defensa.jugador}/${resultado.defensa.archivo}`

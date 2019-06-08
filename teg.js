@@ -9,8 +9,10 @@ const JugadorDto = require("./jugadorDto").JugadorDto
 const Pais = require("./modelos/paises").Pais
 const Limite = require('./modelos/limites').Limite
 const CartaGlobal = require('./modelos/cartaGlobales').CartaGlobal
+const ContinenteDto = require('./continenteDto').ContinenteDto
 const Continente = require('./modelos/continentes').Continente
 const Objetivo = require('./modelos/objetivos').Objetivo
+require('./modelos/escudos').Escudo
 
 const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
 
@@ -25,7 +27,7 @@ let cartaGlobal
 
 const mazoPaisesDto = []
 const mazoCartaGlobales = []
-let mazoContinentes
+const mazoContinentes = []
 let mazoObjetivos = []
 
 const FASE8 = 8
@@ -55,9 +57,13 @@ Pais.find().populate('continente').populate('escudo').exec((err, paises) => {
 		
 		Continente.find().populate('escudo').exec((err, continentes) => {
 			if (err) return console.error(err)
-			mazoContinentes = continentes
+			for (let continente of continentes) {
+				mazoContinentes.push(new ContinenteDto(continente))
+			}
+			
 			for (let pais of paises) {
 				const paisDto = new PaisDto(pais)
+				paisDto.continente = mazoContinentes[pais.continente.id - 1]
 				paisesDto.push(paisDto)
 				for (let limite of pais.limites) {
 					paisDto.limites.push(limite.id)
@@ -114,8 +120,7 @@ io.on('connection', cliente => {
 	cliente.on('nombre', nombre => {
 		clientes[nombre] = cliente
 		console.log(`${nombre} conectado`)
-		cliente.broadcast.emit("agregarJugador", nombre)
-		cliente.emit("listaJugadores", Object.keys(clientes))
+		io.emit("listaJugadores", Object.keys(clientes))
 	})
 
 	cliente.on('disconnect', () => {
@@ -481,13 +486,14 @@ function validarFaseReagrupe() {
 }
 
 function validarBloqueo(paisDto) {
-	const limites = []
-	limites.push(...paisDto.limites)
-	for (let i = 0; i < limites.length; i++) {
-		limites[i] = paisesDto[limites[i] - 1]
-	}
-	if (paisDto.bloqueado(limites)) {
-		throw ("el pais esta bloqueado")
+	if (faseRecarga) {
+		const limites = []
+		for (let limite of paisDto.limites) {
+			limites.push(paisesDto[limite - 1])
+		}
+		if (paisDto.bloqueado(limites)) {
+			throw ("el pais esta bloqueado")
+		}
 	}
 }
 

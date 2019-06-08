@@ -83,10 +83,10 @@ class JugadorDto {
         return paises
     }
 
-    paisesContinente(paisesDto, continente) {
+    paisesContinente(paisesDto, continenteDto) {
         const paises = []
         const paisesJugador = this.paisesJugador(paisesDto)
-        for (let paisDto of continente.paisesContinente(paisesDto)) {
+        for (let paisDto of continenteDto.paisesContinente(paisesDto)) {
             if (paisesJugador.indexOf(paisDto) != -1) {
                 paises.push(paisDto)
             }
@@ -94,13 +94,13 @@ class JugadorDto {
         return paises
     }
 
-    conquistaContinente(paisesDto, continente) {
-        return continente.paisesContinente(paisesDto).length == this.paisesContinente(paisesDto, continente).length
+    conquistaContinente(paisesDto, continenteDto) {
+        return continenteDto.paisesContinente(paisesDto).length == this.paisesContinente(paisesDto, continenteDto).length
     }
 
-    gana(paisD, paises, continentes) {
+    gana(paisD, paises, continentesDto) {
         if (this.paisesJugador(paises) >= 45) return true
-        return this.objetivo.cumpleObjetivo(this, paisD.jugador, paises, continentes)
+        return this.objetivo.cumpleObjetivo(this, paisD.jugador, paises, continentesDto)
     }
 }
 

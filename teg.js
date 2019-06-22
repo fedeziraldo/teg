@@ -14,7 +14,7 @@ const Continente = require('./modelos/continentes').Continente
 const Objetivo = require('./modelos/objetivos').Objetivo
 require('./modelos/escudos').Escudo
 
-const colores = ["ROJO", "VERDE", "AMARILLO", "AZUL", "NARANJA", "CELESTE"]
+const colores = ["ROJO", "VERDE", "AZUL", "NARANJA", "CELESTE"]
 
 let cargaPaises
 const jugadores = []

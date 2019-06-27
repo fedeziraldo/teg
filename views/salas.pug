@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+html(lang="es")
+   head
+      meta(charset="UTF-8")
+      title salas
+      link(rel="stylesheet", href="estilos.css")
+   body(onload = "enviarNombre('" + nombre + "')")
+      h1 Hola #{nombre}
+      ul(id="salas")
+      button(id="crear") Crear
+      div(id="chat")
+      input(id="linea")
+      button(id="chatear") Enviar
+   script(src="/socket.io/socket.io.js")
+   script(src="salas.js")

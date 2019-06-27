@@ -1,4 +1,4 @@
-const server = io()
+const server = io('/teg')
 
 const inicio = document.getElementById("inicio")
 inicio.addEventListener("click", iniciar)

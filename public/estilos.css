@@ -11,7 +11,7 @@ ul{
     position: relative;
 }
 
-[id^='f'], [id^='m']{
+[id^='-f'], [id^='-m']{
     background-color: whitesmoke;
     font-weight: bold;
     font-size: 12px;

@@ -22,10 +22,10 @@ server.on("listaJugadores", lista => {
 server.on("resultado", resultado => {
     let imagen = document.getElementById(resultado.defensa.id)
     imagen.src = `${resultado.defensa.jugador}/${resultado.defensa.archivo}`
-    document.getElementById("f" + resultado.ataque.id).innerHTML = `ejercitos:${resultado.ataque.ejercitos}`
-    document.getElementById("m" + resultado.ataque.id).innerHTML = `misiles:${resultado.ataque.misiles}`
-    document.getElementById("f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
-    document.getElementById("m" + resultado.defensa.id).innerHTML = `misiles:${resultado.defensa.misiles}`
+    document.getElementById("-f" + resultado.ataque.id).innerHTML = `ejercitos:${resultado.ataque.ejercitos}`
+    document.getElementById("-m" + resultado.ataque.id).innerHTML = `misiles:${resultado.ataque.misiles}`
+    document.getElementById("-f" + resultado.defensa.id).innerHTML = `ejercitos:${resultado.defensa.ejercitos}`
+    document.getElementById("-m" + resultado.defensa.id).innerHTML = `misiles:${resultado.defensa.misiles}`
 })
 
 server.on("jugadaInvalida", resultado => {
@@ -61,12 +61,12 @@ server.on("iniciaJuego", paises => {
         mapa.appendChild(imagen)
         imagen.addEventListener("load", ev => {
 
-            if (document.getElementById("f" + pais.id)) {
+            if (document.getElementById("-f" + pais.id)) {
                 return
             }
 
             let fichas = document.createElement("div")
-            fichas.id = "f" + pais.id
+            fichas.id = "-f" + pais.id
             fichas.draggable = true
             fichas.addEventListener("click", ponerFicha)
             fichas.addEventListener("dragover", allowDrop)
@@ -78,7 +78,7 @@ server.on("iniciaJuego", paises => {
             mapa.appendChild(fichas)
 
             let misiles = document.createElement("div")
-            misiles.id = "m" + pais.id
+            misiles.id = "-m" + pais.id
             misiles.draggable = true
             misiles.addEventListener("click", ponerMisil)
             misiles.addEventListener("dragover", allowDrop)
@@ -93,8 +93,8 @@ server.on("iniciaJuego", paises => {
 })
 
 server.on("ponerPais", pais => {
-    document.getElementById("f" + pais.id).innerHTML = `ejercitos:${pais.ejercitos}`
-    document.getElementById("m" + pais.id).innerHTML = `misiles:${pais.misiles}`
+    document.getElementById("-f" + pais.id).innerHTML = `ejercitos:${pais.ejercitos}`
+    document.getElementById("-m" + pais.id).innerHTML = `misiles:${pais.misiles}`
 })
 
 server.on("jugadores", jugadores => {

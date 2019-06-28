@@ -9,12 +9,12 @@ class JugadorDto {
         this.objetivo = "capturar 45 paises"
     }
 
-    static get SUMA_CANJE() {
-        return 7
-    }
-
     static get LIMITE_CANJE() {
         return 3
+    }
+
+    static canjear(canje) {
+        return canje.length <= 3 && canje.includes("A") && canje.includes("S") && canje.includes("B")
     }
 
     puedeSacarCarta() {
@@ -43,12 +43,12 @@ class JugadorDto {
             }
         }
         if (cartas.length == 1) {
-            return cartas[0].escudo.valor[0] == JugadorDto.SUMA_CANJE
+            return JugadorDto.canjear(cartas[0].escudo.valor[0])
         }
         if (cartas.length == 2) {
             for (let valor0 in cartas[0].escudo.valor) {
                 for (let valor1 in cartas[1].escudo.valor) {
-                    if (valor0 + valor1 == JugadorDto.SUMA_CANJE) {
+                    if (JugadorDto.canjear(valor0 + valor1)) {
                         return true
                     }
                 }
@@ -58,8 +58,8 @@ class JugadorDto {
         for (let valor0 in cartas[0].escudo.valor) {
             for (let valor1 in cartas[1].escudo.valor) {
                 for (let valor2 in cartas[2].escudo.valor) {
-                    if (valor0 + valor1 + valor2 == JugadorDto.SUMA_CANJE ||
-                        valor0 == valor1 && valor1 == valor2) {
+                    if (JugadorDto.canjear(valor0 + valor1 + valor2) ||
+                            valor0valor0 == valor1 && valor1 == valor2) {
                         return true
                     }
                 }

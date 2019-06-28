@@ -7,8 +7,8 @@ function iniciar() {
     server.emit("inicio")
 }
 
-function enviarNombre(nombre) {
-    server.emit("nombre", nombre)
+function enviarNombre(nombre, sala) {
+    server.emit("nombre", {nombre, sala})
 }
 
 server.on("listaJugadores", lista => {
@@ -117,7 +117,7 @@ server.on("objetivo", jugador => {
     }
     document.getElementById("cartaContinente").innerHTML = ""
     for (let carta of jugador.cartasContinente) {
-        if (carta.jugadores.indexOF(jugador.color) != -1) {
+        if (carta.jugadores.indexOf(jugador.color) != -1) {
             document.getElementById("cartaContinente").innerHTML += `<li>${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
         } else {
             document.getElementById("cartaContinente").innerHTML += `<li><input type="checkbox" name="${carta.id}"/>${carta.nombre} (${carta.fichas}) (${carta.escudo.tipo})</li>`
@@ -146,29 +146,29 @@ function allowDrop(ev) {
 }
 
 function ataqueA(ev) {
-    ev.dataTransfer.setData("ataque", ev.target.id.substr(1))
+    ev.dataTransfer.setData("ataque", ev.target.id.substr(2))
 }
 
 function enfrentaD(ev) {
     ev.preventDefault()
     if (ev.dataTransfer.getData("ataque")) {
-        server.emit("ataque", { ataque: ev.dataTransfer.getData("ataque"), defensa: ev.target.id.substr(1) })
+        server.emit("ataque", { ataque: ev.dataTransfer.getData("ataque"), defensa: ev.target.id.substr(2) })
     } else {
-        server.emit("misil", { ataque: ev.dataTransfer.getData("misil"), defensa: ev.target.id.substr(1) })
+        server.emit("misil", { ataque: ev.dataTransfer.getData("misil"), defensa: ev.target.id.substr(2) })
     }
 }
 
 function misilA(ev) {
-    ev.dataTransfer.setData("misil", ev.target.id.substr(1))
+    ev.dataTransfer.setData("misil", ev.target.id.substr(2))
 }
 function pasarTurno() {
     server.emit('pasarTurno')
 }
 function ponerFicha(ev) {
-    server.emit('ponerFicha', ev.target.id.substr(1))
+    server.emit('ponerFicha', ev.target.id.substr(2))
 }
 function ponerMisil(ev) {
-    server.emit('ponerMisil', ev.target.id.substr(1))
+    server.emit('ponerMisil', ev.target.id.substr(2))
 }
 
 function canjear() {

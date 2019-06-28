@@ -21,15 +21,19 @@ function enviarNombre(nombre) {
         document.getElementById("chat").innerHTML += `<li>${msg}</li>`
     })
 
-    server.on("iniciar", nombre => {
+    server.on("iniciar", teg => {
         const form = document.createElement("form")
         form.action = 'salaEspera'
         form.method = 'POST'
         document.body.appendChild(form)
-        const nom = document.createElement("input")
-        nom.value = nombre
-        nom.name = "nombre"
-        form.appendChild(nom)
+        const nombre = document.createElement("input")
+        nombre.value = teg.nombre
+        nombre.name = "nombre"
+        form.appendChild(nombre)
+        const sala = document.createElement("input")
+        sala.value = teg.sala
+        sala.name = "sala"
+        form.appendChild(sala)
         form.submit()
     })
 }

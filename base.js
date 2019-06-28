@@ -868,13 +868,13 @@ db.continentes.insert([
 ])
 
 db.escudos.insert([
-  { _id: ObjectId("1234567890123456789012e1"), id: 1, tipo: "Avión", valor: [1] },
-  { _id: ObjectId("1234567890123456789012e2"), id: 2, tipo: "Soldado", valor: [2] },
-  { _id: ObjectId("1234567890123456789012e3"), id: 3, tipo: "Ancla", valor: [4] },
-  { _id: ObjectId("1234567890123456789012e4"), id: 4, tipo: "Armas", valor: [1, 2, 4] },
-  { _id: ObjectId("1234567890123456789012e5"), id: 5, tipo: "Super tarjeta", valor: [7],},
-  { _id: ObjectId("1234567890123456789012e6"), id: 6, tipo: "Avión ancla", valor: [5],},
-  { _id: ObjectId("1234567890123456789012e7"), id: 7, tipo: "Soldado ancla", valor: [6],}
+  { _id: ObjectId("1234567890123456789012e1"), id: 1, tipo: "Avión", valor: ['A']},
+  { _id: ObjectId("1234567890123456789012e2"), id: 2, tipo: "Soldado", valor: ['S']},
+  { _id: ObjectId("1234567890123456789012e3"), id: 3, tipo: "Ancla", valor: ['B']},
+  { _id: ObjectId("1234567890123456789012e4"), id: 4, tipo: "Armas", valor: ['A', 'S', 'B']},
+  { _id: ObjectId("1234567890123456789012e5"), id: 5, tipo: "Super tarjeta", valor: ['ABS']},
+  { _id: ObjectId("1234567890123456789012e6"), id: 6, tipo: "Avión ancla", valor: ['AB']},
+  { _id: ObjectId("1234567890123456789012e7"), id: 7, tipo: "Soldado ancla", valor: ['BS']}
 ])
 
 db.objetivos.insert([

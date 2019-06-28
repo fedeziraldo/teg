@@ -16,14 +16,10 @@ require('./modelos/escudos').Escudo
 
 const colores = ["ROJO", "VERDE", "AZUL", "NARANJA", "CELESTE"]
 
-let cargaPaises
-const jugadores = []
-const jugadorDtos = []
-const paisesDto = []
-const clientes = {}
+const juegos = {}
 
-let turno = 0
-let cartaGlobal
+let cargaPaises
+const paisesDto = []
 
 const mazoPaisesDto = []
 const mazoCartaGlobales = []
@@ -41,8 +37,6 @@ let faseReagrupe = false
 let faseRecarga = false
 let captura = false
 let fichas = FASE8
-
-let traslados = []
 
 Pais.find().populate('continente').populate('escudo').exec((err, paises) => {
 	if (err) return console.error(err)
@@ -118,7 +112,8 @@ app.post('/entrar', (req, res) => {
 
 app.post('/salaEspera', (req, res) => {
 	res.render('salaEspera', {
-		nombre: req.body.nombre
+		nombre: req.body.nombre,
+		sala: req.body.sala
 	})
 })
 
@@ -171,7 +166,7 @@ salaEspera.on('connection', cliente => {
 	
 	cliente.on("iniciar", sala => {
 		for (let nombre of salas[sala].integrantes) {
-			clienteSala[nombre].emit("iniciar", nombre)
+			clienteSala[nombre].emit("iniciar", {nombre, sala})
 		}
     })
 
@@ -191,12 +186,20 @@ function salir(cliente) {
     }
 }
 
+let turno = 0
+let cartaGlobal
+const traslados = []
+const jugadores = []
+const jugadorDtos = []
+const clientes = {}
 const teg = io.of('teg')
 teg.on('connection', cliente => {
-	cliente.on('nombre', nombre => {
-		clientes[nombre] = cliente
-		console.log(`${nombre} conectado`)
-		teg.emit("listaJugadores", Object.keys(clientes))
+	cliente.on('nombre', jugador => {
+		clientes[jugador.nombre] = cliente
+		cliente.sala = jugador.sala
+		cliente.join(jugador.sala)
+		console.log(`${jugador.nombre} jugando`)
+		teg.to(jugador.sala).emit("listaJugadores", Object.keys(clientes))
 	})
 
 	cliente.on('disconnect', () => {
@@ -204,9 +207,9 @@ teg.on('connection', cliente => {
 			if (clientes[nombre] == cliente) {
 				jugadorDtos.splice(jugadores.indexOf(cliente), 1)
 				jugadores.splice(jugadores.indexOf(cliente), 1)
-				console.log(`${nombre} desconectado`)
+				console.log(`${nombre} desjugando`)
 				delete clientes[nombre]
-				teg.emit("listaJugadores", Object.keys(clientes))
+				teg.to(cliente.sala).emit("listaJugadores", Object.keys(clientes))
 				break
 			}
 		}
@@ -218,7 +221,7 @@ teg.on('connection', cliente => {
 			jugadores.push(clientes[nombre])
 			jugadorDtos.push(new JugadorDto(colores[jugadorDtos.length], nombre))
 		}
-		teg.emit("jugadores", jugadorDtos)
+		teg.to(cliente.sala).emit("jugadores", jugadorDtos)
 		for (let i = 0; i < jugadorDtos.length; i++) {
 			jugadorDtos[i].objetivo = mazoObjetivos.pop()
 			jugadores[i].emit("objetivo", jugadorDtos[i])
@@ -226,9 +229,12 @@ teg.on('connection', cliente => {
 		for (let i = 0; i < mazoPaisesDto.length; i++) {
 			mazoPaisesDto[i].jugador = jugadorDtos[i % jugadorDtos.length].color
 		}
-		teg.emit("iniciaJuego", paisesDto)
-		teg.emit("turno", jugadorDtos[turno % jugadorDtos.length].nombre)
-		teg.emit("fichas", fichas)
+		for (let paisDto of mazoPaisesDto) {
+			traslados[paisDto.id - 1] = { ejercitos: 0, misiles: 0 }
+		}
+		teg.to(cliente.sala).emit("iniciaJuego", paisesDto)
+		teg.to(cliente.sala).emit("turno", jugadorDtos[turno % jugadorDtos.length].nombre)
+		teg.to(cliente.sala).emit("fichas", fichas)
 		desordenar(mazoPaisesDto)
 	})
 
@@ -266,9 +272,9 @@ teg.on('connection', cliente => {
 				const ejercitosA = paisDtoA.ejercitos
 				const ejercitosD = paisDtoD.ejercitos
 				const dadosA = enfrentamiento.tirarDadosA(ejercitosA, ejercitosD, cartaGlobal.ataque)
-				teg.emit("dadosA", dadosA)
+				teg.to(cliente.sala).emit("dadosA", dadosA)
 				const dadosD = enfrentamiento.tirarDadosD(ejercitosD, cartaGlobal.defensa)
-				teg.emit("dadosD", dadosD)
+				teg.to(cliente.sala).emit("dadosD", dadosD)
 				const enfrentamientos = enfrentamiento.enfrentamientos(ejercitosA, ejercitosD)
 				const resultado = enfrentamiento.atacar(dadosA, dadosD, enfrentamientos)
 				paisDtoD.ejercitos -= resultado
@@ -299,12 +305,13 @@ teg.on('connection', cliente => {
 					faseAtaque = false
 					captura = true
 					for (let paisDto of paisesDto) {
-						traslados.push({ ejercitos: 0, misiles: 0 })
+						traslados[paisDto.id - 1].ejercitos = 0
+						traslados[paisDto.id - 1].misiles = 0 
 					}
 					traslados[paisDtoA.id - 1].ejercitos = 2
 				}
 			}
-			teg.emit("resultado", { ataque: paisDtoA, defensa: paisDtoD })
+			teg.to(cliente.sala).emit("resultado", { ataque: paisDtoA, defensa: paisDtoD })
 		} catch (e) {
 			console.log(e)
 			cliente.emit('jugadaInvalida', e)
@@ -336,18 +343,18 @@ teg.on('connection', cliente => {
 				paisDtoA.misiles--
 			} else {
 				validarFaseAtaque()
-				const daño = 4 - distancia
-				if (paisDtoD.ejercitos <= daño) {
+				const dano = 4 - distancia
+				if (paisDtoD.ejercitos <= dano) {
 					throw ("no se puede matar un pais")
 				}
 				if (paisDtoA.misiles <= paisDtoD.misiles) {
 					throw ("no se puede tirar misil con menos paises que el otro ")
 				}
-				teg.emit("dadosA", "lanza un misil")
+				teg.to(cliente.sala).emit("dadosA", "lanza un misil")
 				paisDtoA.misiles--
-				paisDtoD.ejercitos -= daño
+				paisDtoD.ejercitos -= dano
 			}
-			teg.emit("resultado", { ataque: paisDtoA, defensa: paisDtoD })
+			teg.to(cliente.sala).emit("resultado", { ataque: paisDtoA, defensa: paisDtoD })
 		} catch (e) {
 			console.log(e)
 			cliente.emit('jugadaInvalida', e)
@@ -356,21 +363,23 @@ teg.on('connection', cliente => {
 	})
 	cliente.on('pasarTurno', () => {
 		try {
-			validarTurno(cliente)
+			if (jugadores[turno % jugadores.length] != cliente) {
+				throw ('no es tu turno')
+			}
 			if (fichas > 0) {
 				throw ("quedan fichas")
 			}
 			if (captura) {
 				faseAtaque = true
 				captura = false
-				traslados = []
 				return
 			}
 			if (faseAtaque) {
 				faseAtaque = false
 				faseReagrupe = true
 				for (let paisDto of paisesDto) {
-					traslados.push({ ejercitos: paisDto.ejercitos, misiles: paisDto.misiles })
+					traslados[paisDto.id - 1].ejercitos = paisDto.ejercitos
+					traslados[paisDto.id - 1].misiles = paisDto.misiles 
 				}
 				return
 			}
@@ -382,7 +391,7 @@ teg.on('connection', cliente => {
 					cliente.emit("objetivo", jugadorActual)
 					if (carta.jugador == jugadorActual.color) {
 						carta.ejercitos += 3
-						teg.emit("ponerPais", carta)
+						teg.to(cliente.sala).emit("ponerPais", carta)
 					}
 				}
 				jugadorActual.paisesCapturadosRonda = 0
@@ -394,36 +403,34 @@ teg.on('connection', cliente => {
 					fase8 = false
 					fase4 = true
 					fichas = FASE4
-					teg.emit("fichas", fichas)
+					teg.to(cliente.sala).emit("fichas", fichas)
 				} else if (fase4) {
 					fase4 = false
 					faseAtaque = true
 					cartaGlobal = mazoCartaGlobales.pop()
-					teg.emit("cartaGlobal", cartaGlobal)
+					teg.to(cliente.sala).emit("cartaGlobal", cartaGlobal)
 				} else if (faseReagrupe) {
-					traslados = []
 					faseReagrupe = false
 					faseRecarga = true
 					fichas = parseInt(jugadorActual.paisesJugador(paisesDto).length / 2)
 					for (let continente of jugadorActual.cartasContinente) {
 						fichas += continente.fichas
 					}
-					teg.emit("fichas", fichas)
+					teg.to(cliente.sala).emit("fichas", fichas)
 				} else if (faseRecarga) {
 					faseRecarga = false
 					faseAtaque = true
 					cartaGlobal = mazoCartaGlobales.pop()
-					teg.emit("cartaGlobal", cartaGlobal)
+					teg.to(cliente.sala).emit("cartaGlobal", cartaGlobal)
 				}
 			} else {
 				if (fase8) {
 					fichas = FASE8
-					teg.emit("fichas", fichas)
+					teg.to(cliente.sala).emit("fichas", fichas)
 				} else if (fase4) {
 					fichas = FASE4
-					teg.emit("fichas", fichas)
+					teg.to(cliente.sala).emit("fichas", fichas)
 				} else if (faseReagrupe) {
-					traslados = []
 					faseReagrupe = false
 					faseAtaque = true
 				} else if (faseRecarga) {
@@ -431,10 +438,10 @@ teg.on('connection', cliente => {
 					for (let continente of jugadorActual.cartasContinente) {
 						fichas += continente.fichas
 					}
-					teg.emit("fichas", fichas)
+					teg.to(cliente.sala).emit("fichas", fichas)
 				}
 			}
-			teg.emit("turno", jugadorActual.nombre)
+			teg.to(cliente.sala).emit("turno", jugadorActual.nombre)
 		} catch (e) {
 			console.log(e)
 			cliente.emit('jugadaInvalida', e)
@@ -451,8 +458,8 @@ teg.on('connection', cliente => {
 			validarBloqueo(paisDto)
 			paisDto.ejercitos++
 			fichas--
-			teg.emit("fichas", fichas)
-			teg.emit("ponerPais", paisDto)
+			teg.to(cliente.sala).emit("fichas", fichas)
+			teg.to(cliente.sala).emit("ponerPais", paisDto)
 		} catch (e) {
 			console.log(e)
 			cliente.emit('jugadaInvalida', e)
@@ -469,8 +476,8 @@ teg.on('connection', cliente => {
 			validarBloqueo(paisDto)
 			paisDto.misiles++
 			fichas -= MISILES
-			teg.emit("fichas", fichas)
-			teg.emit("ponerPais", paisDto)
+			teg.to(cliente.sala).emit("fichas", fichas)
+			teg.to(cliente.sala).emit("ponerPais", paisDto)
 		} catch (e) {
 			console.log(e)
 			cliente.emit('jugadaInvalida', e)
@@ -478,7 +485,9 @@ teg.on('connection', cliente => {
 	})
 	cliente.on('canjear', cartas => {
 		try {
-			validarTurno(cliente)
+			if (jugadores[turno % jugadores.length] != cliente) {
+				throw ('no es tu turno')
+			}
 			validarFaseRecargaMisiles()
 			const paises = []
 			for (let carta of cartas.paises) {
@@ -499,7 +508,7 @@ teg.on('connection', cliente => {
 				for (let continente of continentes) {
 					continente.jugadores.push(jugadorActual.color)
 				}
-				teg.emit("fichas", fichas)
+				teg.to(cliente.sala).emit("fichas", fichas)
 				cliente.emit("objetivo", jugadorActual)
 			} else {
 				throw ("no se puede hacer el canje con esas cartas")

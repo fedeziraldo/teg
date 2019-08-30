@@ -14,4 +14,4 @@ const cartaGlobalSchema = new mongoose.Schema({
 
 const CartaGlobal = mongoose.model('cartaglobales', cartaGlobalSchema)
 
-exports.CartaGlobal = CartaGlobal
+module.exports = CartaGlobal
